@@ -1,0 +1,19 @@
+defmodule Youtubesync.Context.Message do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "messages" do
+    field :message, :string
+    field :username, :string
+    field :room_id, :id
+
+    timestamps()
+  end
+
+  @doc false
+  def changeset(message, attrs) do
+    message
+    |> cast(attrs, [:message, :username])
+    |> validate_required([:message, :username])
+  end
+end

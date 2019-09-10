@@ -1,5 +1,11 @@
 import socket from "./socket"
+import videojs from "video.js"
+import "videojs-youtube"
+import uuid from "uuid"
+
 let channel = socket.channel('room:' + window.roomId, {}); // connect to chat "room"
+
+let me = uuid.v1();
 
 channel.on('shout', function (payload) { // listen to the 'shout' event
   let li = document.createElement("li"); // create new list item DOM element
@@ -51,3 +57,42 @@ msg.addEventListener('keypress', function (event) {
 if (name.value === "") {
   name.value = "Guest";
 }
+
+// Video logic
+var player = videojs('video')
+
+player.on("pause", (e) => {
+  channel.push('vid-pause', {
+    originator: me
+  });
+})
+
+channel.on('vid-pause', function (payload) { // listen to the 'shout' event
+  let li = document.createElement("li"); // create new list item DOM element
+  li.innerHTML = '<span class="text-focus-in text-warning"><b>' + 'Video paused.' + '</b>'; // set li contents
+  ul.appendChild(li); // append to list
+  ul.scrollTop = ul.scrollHeight - ul.clientHeight;
+
+  if (payload.originator !== me)
+    player.pause();
+});
+
+
+player.on("play", (e) => {
+  channel.push('vid-play', {
+    originator: me,
+    timestamp: player.currentTime()
+  });
+})
+
+channel.on('vid-play', function (payload) { // listen to the 'shout' event
+  let li = document.createElement("li"); // create new list item DOM element
+  li.innerHTML = '<span class="text-focus-in text-warning"><b>' + 'Video resumed.' + '</b>'; // set li contents
+  ul.appendChild(li); // append to list
+  ul.scrollTop = ul.scrollHeight - ul.clientHeight;
+
+  if (payload.originator !== me) {
+    player.play();
+    player.currentTime(payload.timestamp);
+  }
+});

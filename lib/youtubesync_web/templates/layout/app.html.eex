@@ -15,7 +15,7 @@
         </a>
       </section>
     </header>
-    <main role="main" class="container">
+    <main role="main" class="container-fluid">
       <%= render @view_module, @view_template, assigns %>
     </main>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>

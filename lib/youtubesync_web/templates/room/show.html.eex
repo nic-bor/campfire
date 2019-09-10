@@ -1,36 +1,61 @@
 <div class="row">
+
+  <%# Upper Area %>
   <div class="col-12">
-    <h2 class="text-center">
-      <%= @room.name %>
-    </h2>
-  </div>
-  <div class="col-12 col-md-8 offset-md-2">
-    <div class="form-group row">
-      <label for="name" class="text-md-right col-md-4 col-form-label">Your Name:</label>
-      <div class="col-md-8">
-        <input type="text" id="name" class="form-control" placeholder="Enter Name">
+    <div class="container">
+      <div class="row">
+        <%# Room name %>
+        <div class="col-12">
+          <h2 class="text-center">
+            <%= @room.name %>
+          </h2>
+        </div>
+        <%# Inputs %>
+        <div class="col-12 col-md-8 offset-md-2">
+          <div class="form-group row">
+            <label for="name" class="text-md-right col-md-4 col-form-label">Your Name:</label>
+            <div class="col-md-8">
+              <input type="text" id="name" class="form-control" placeholder="Enter Name">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="inputAddVideo" class="text-md-right col-12 col-sm-4 col-form-label">Video URL:</label>
+            <div class="col-12 col-md-6">
+              <input type="text" id="inputAddVideo" class="form-control" placeholder="Enter URL">
+            </div>
+            <div class="col-12 col-md-2 mt-3 mt-md-0">
+              <button type="button" class="form-control btn btn-primary" id="btnAddVideo">Add!</button>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
-    <div class="form-group row">
-      <label for="inputAddVideo" class="text-md-right col-12 col-sm-4 col-form-label">Video URL:</label>
-      <div class="col-12 col-md-6">
-        <input type="text" id="inputAddVideo" class="form-control" placeholder="Enter URL">
-      </div>
-      <div class="col-12 col-md-2 mt-3 mt-md-0">
-        <button type="button" class="form-control btn btn-primary" id="btnAddVideo">Add!</button>
-      </div>
+  <%# Video %>
+  <div class="col-12 col-md-6 col-lg-8 order-md-2">
+    <div id="video-wrapper">
+    <video
+      id="video"
+      class="video-js vjs-default-skin"
+      controls
+      autoplay
+      preload="auto"
+      data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=nBPK_oXeJgA"}], "youtube": {"iv_load_policy": 3, "modestbranding": 1, "origin": "*"} }'
+    >
+    </video>
     </div>
   </div>
-  <div class="col-12">
-    <p>Video Here</p>
-  </div>
-  <div class="col-12">
-    <ul id='msg-list'></ul>
-  </div>
-  <div class="col-12">
-    <div class="row">
-      <div class="col-12">
-        <input type="text" id="msg" class="form-control" placeholder="Your Message" autofocus>
+
+  <%# Chat %>
+  <div class="col-12 col-md-6 col-lg-4 order-md-1">
+    <div>
+      <ul id="msg-list"></ul>
+    </div>
+    <div>
+      <div class="row">
+        <div class="col-12">
+          <input type="text" id="msg" class="form-control" placeholder="Your Message" autofocus>
+        </div>
       </div>
     </div>
   </div>

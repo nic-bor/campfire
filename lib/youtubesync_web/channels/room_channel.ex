@@ -46,6 +46,17 @@ defmodule YoutubesyncWeb.RoomChannel do
     {:noreply, socket}
   end
 
+  def handle_in("vid-pause", payload, socket) do
+    broadcast socket, "vid-pause", payload
+    {:noreply, socket}
+  end
+
+  def handle_in("vid-play", payload, socket) do
+    broadcast socket, "vid-play", payload
+    {:noreply, socket}
+  end
+
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true

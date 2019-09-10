@@ -2,7 +2,7 @@ defmodule YoutubesyncWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "room:lobby", YoutubesyncWeb.RoomChannel
+  channel "room:*", YoutubesyncWeb.RoomChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

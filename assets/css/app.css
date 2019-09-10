@@ -2,8 +2,21 @@
 
 @import "../node_modules/bootstrap/dist/css/bootstrap.css";
 @import "../node_modules/font-awesome/css/font-awesome.css";
+@import "animation.css";
 
 h1 {
   text-align: center;
   margin-bottom: 1rem;
+}
+
+#msg-list {
+  height: 800px;
+  padding: 10px;
+  overflow-y: scroll;
+}
+
+#msg-list li {
+  display: block;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
 }

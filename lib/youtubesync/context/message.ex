@@ -13,7 +13,7 @@ defmodule Youtubesync.Context.Message do
   @doc false
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [:message, :username])
-    |> validate_required([:message, :username])
+    |> cast(attrs, [:message, :username, :room_id])
+    |> validate_required([:message, :username, :room_id])
   end
 end

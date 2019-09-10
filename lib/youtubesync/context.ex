@@ -133,6 +133,14 @@ defmodule Youtubesync.Context do
   """
   def get_message!(id), do: Repo.get!(Message, id)
 
+  def get_messages_by_room(room_id) do
+    Repo.all(
+      from m in Message,
+        where: m.room_id == ^room_id,
+        select: m
+    )
+  end
+
   @doc """
   Creates a message.
 

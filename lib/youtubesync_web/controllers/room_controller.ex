@@ -13,7 +13,8 @@ defmodule YoutubesyncWeb.RoomController do
   end
 
   def show(conn, %{"id" => id}) do
-    render(conn, "show.html", id: id)
+    room = Context.get_room!(id)
+    render(conn, "show.html", room: room)
   end
 
   def index(conn, _params) do

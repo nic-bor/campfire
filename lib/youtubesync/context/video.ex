@@ -13,7 +13,7 @@ defmodule Youtubesync.Context.Video do
   @doc false
   def changeset(video, attrs) do
     video
-    |> cast(attrs, [:url, :bPlayed])
-    |> validate_required([:url, :bPlayed])
+    |> cast(attrs, [:url, :bPlayed, :room_id])
+    |> validate_required([:url, :bPlayed, :room_id])
   end
 end

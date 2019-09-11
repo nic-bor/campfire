@@ -59,40 +59,86 @@ if (name.value === "") {
 }
 
 // Video logic
-var player = videojs('video')
-
-player.on("pause", (e) => {
-  channel.push('vid-pause', {
-    originator: me
-  });
-})
-
-channel.on('vid-pause', function (payload) { // listen to the 'shout' event
-  let li = document.createElement("li"); // create new list item DOM element
-  li.innerHTML = '<span class="text-focus-in text-warning"><b>' + 'Video paused.' + '</b>'; // set li contents
-  ul.appendChild(li); // append to list
-  ul.scrollTop = ul.scrollHeight - ul.clientHeight;
-
-  if (payload.originator !== me)
-    player.pause();
-});
-
-
-player.on("play", (e) => {
-  channel.push('vid-play', {
-    originator: me,
-    timestamp: player.currentTime()
-  });
-})
-
-channel.on('vid-play', function (payload) { // listen to the 'shout' event
-  let li = document.createElement("li"); // create new list item DOM element
-  li.innerHTML = '<span class="text-focus-in text-warning"><b>' + 'Video resumed.' + '</b>'; // set li contents
-  ul.appendChild(li); // append to list
-  ul.scrollTop = ul.scrollHeight - ul.clientHeight;
-
-  if (payload.originator !== me) {
-    player.play();
-    player.currentTime(payload.timestamp);
+var player = videojs('video', {
+  "fluid": true,
+  "techOrder": ["youtube"],
+  "sources": [{
+    "type": "video/youtube",
+    "src": "https://www.youtube.com/watch?v=nBPK_oXeJgA"
+  }],
+  "youtube": {
+    "iv_load_policy": 3,
+    "modestbranding": 1,
+    "origin": "*"
   }
-});
+})
+player.ready(() => {
+  var playerElem = document.getElementById('video')
+  var ignoreNext = false
+
+  var pauseCallback = () => {
+    if (!ignoreNext)
+      channel.push('vid-pause', {
+        originator: me
+      });
+
+    ignoreNext = false
+  }
+
+  var playCallback = () => {
+    if (!ignoreNext)
+      channel.push('vid-play', {
+        originator: me,
+        timestamp: player.currentTime()
+      });
+
+    ignoreNext = false
+  }
+
+  player.on("pause", pauseCallback);
+
+  channel.on('vid-pause', function (payload) {
+    if (payload.originator !== me) {
+      ignoreNext = true;
+      player.pause();
+    }
+  });
+
+  channel.on('vid-play', function (payload) {
+    if (payload.originator !== me) {
+      ignoreNext = true;
+      player.currentTime(payload.timestamp);
+      player.play();
+    }
+  });
+
+  channel.on('sync-request', function (payload) {
+    if (payload.requestor !== me) {
+      channel.push('sync-response', {
+        isPlaying: !player.paused(),
+        timestamp: player.currentTime(),
+        requestor: payload.requestor
+      })
+    }
+  });
+
+  channel.on('sync-response', function (payload) {
+    if (payload.requestor === me) {
+      player.currentTime(payload.timestamp)
+      if (player.paused() && payload.isPlaying) {
+        ignoreNext = true
+        player.play()
+      } else if (!player.paused() && !payload.isPlaying) {
+        ignoreNext = true
+        player.pause()
+      }
+    }
+  });
+
+  player.one("play", () => {
+    channel.push('sync-request', {
+      requestor: me
+    })
+    player.on("play", playCallback);
+  })
+})

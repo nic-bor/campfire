@@ -56,6 +56,15 @@ defmodule YoutubesyncWeb.RoomChannel do
     {:noreply, socket}
   end
 
+  def handle_in("sync-request", payload, socket) do
+    broadcast socket, "sync-request", payload
+    {:noreply, socket}
+  end
+
+  def handle_in("sync-response", payload, socket) do
+    broadcast socket, "sync-response", payload
+    {:noreply, socket}
+  end
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do

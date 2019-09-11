@@ -1,7 +1,7 @@
 let btn = document.getElementById('btnCreateRoom'); // message input field
 btn.addEventListener('click', function (event) {
   fetch(
-    'http://localhost:4000/api/rooms', {
+    '/api/rooms', {
       method: 'POST'
     }
   ).then(response => {

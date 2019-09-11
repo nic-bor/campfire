@@ -1,4 +1,4 @@
-defmodule Youtubesync.Repo.Migrations.AddUuid do
+defmodule Campfire.Repo.Migrations.AddUuid do
   use Ecto.Migration
 
   def change do

@@ -1,11 +1,11 @@
-defmodule YoutubesyncWeb.Gettext do
+defmodule CampfireWeb.Gettext do
   @moduledoc """
   A module providing Internationalization with a gettext-based API.
 
   By using [Gettext](https://hexdocs.pm/gettext),
   your module gains a set of macros for translations, for example:
 
-      import YoutubesyncWeb.Gettext
+      import CampfireWeb.Gettext
 
       # Simple translation
       gettext("Here is the string to translate")
@@ -20,5 +20,5 @@ defmodule YoutubesyncWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :youtubesync
+  use Gettext, otp_app: :campfire
 end

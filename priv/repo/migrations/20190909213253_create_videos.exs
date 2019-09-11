@@ -1,4 +1,4 @@
-defmodule Youtubesync.Repo.Migrations.CreateVideos do
+defmodule Campfire.Repo.Migrations.CreateVideos do
   use Ecto.Migration
 
   def change do

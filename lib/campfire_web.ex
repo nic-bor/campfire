@@ -1,12 +1,12 @@
-defmodule YoutubesyncWeb do
+defmodule CampfireWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use YoutubesyncWeb, :controller
-      use YoutubesyncWeb, :view
+      use CampfireWeb, :controller
+      use CampfireWeb, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,19 +19,19 @@ defmodule YoutubesyncWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: YoutubesyncWeb
+      use Phoenix.Controller, namespace: CampfireWeb
 
       import Plug.Conn
-      import YoutubesyncWeb.Gettext
-      alias YoutubesyncWeb.Router.Helpers, as: Routes
+      import CampfireWeb.Gettext
+      alias CampfireWeb.Router.Helpers, as: Routes
     end
   end
 
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/youtubesync_web/templates",
-        namespace: YoutubesyncWeb
+        root: "lib/campfire_web/templates",
+        namespace: CampfireWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
@@ -39,9 +39,9 @@ defmodule YoutubesyncWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import YoutubesyncWeb.ErrorHelpers
-      import YoutubesyncWeb.Gettext
-      alias YoutubesyncWeb.Router.Helpers, as: Routes
+      import CampfireWeb.ErrorHelpers
+      import CampfireWeb.Gettext
+      alias CampfireWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -56,7 +56,7 @@ defmodule YoutubesyncWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import YoutubesyncWeb.Gettext
+      import CampfireWeb.Gettext
     end
   end
 

@@ -1,5 +1,5 @@
-defmodule YoutubesyncWeb.IndexControllerTest do
-  use YoutubesyncWeb.ConnCase
+defmodule CampfireWeb.IndexControllerTest do
+  use CampfireWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

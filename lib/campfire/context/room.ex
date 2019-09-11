@@ -1,4 +1,4 @@
-defmodule Youtubesync.Context.Room do
+defmodule Campfire.Context.Room do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
@@ -21,7 +21,6 @@ defmodule Youtubesync.Context.Room do
     query
     |> where([q], q.uuid == ^uuid)
   end
-
 
   @doc false
   def changeset(room, attrs) do

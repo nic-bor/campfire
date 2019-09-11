@@ -1,7 +1,7 @@
-defmodule YoutubesyncWeb.RoomChannel do
-  use YoutubesyncWeb, :channel
+defmodule CampfireWeb.RoomChannel do
+  use CampfireWeb, :channel
 
-  alias Youtubesync.Context
+  alias Campfire.Context
 
   def join("room:" <> _room_id, payload, socket) do
     if authorized?(payload) do
@@ -33,7 +33,7 @@ defmodule YoutubesyncWeb.RoomChannel do
   def handle_in("shout", payload, socket) do
     "room:" <> room_id = socket.topic
     data = Map.put_new(payload, "room_id", room_id)
-    Context.Message.changeset(%Context.Message{}, data) |> Youtubesync.Repo.insert!
+    Context.Message.changeset(%Context.Message{}, data) |> Campfire.Repo.insert!
     broadcast socket, "shout", payload
     {:noreply, socket}
   end
@@ -41,7 +41,7 @@ defmodule YoutubesyncWeb.RoomChannel do
   def handle_in("addvideo", payload, socket) do
     "room:" <> room_id = socket.topic
     data = Map.put_new(payload, "room_id", room_id)
-    Context.Video.changeset(%Context.Video{}, data) |> Youtubesync.Repo.insert!
+    Context.Video.changeset(%Context.Video{}, data) |> Campfire.Repo.insert!
     broadcast socket, "addvideo", %{}
     {:noreply, socket}
   end

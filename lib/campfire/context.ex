@@ -1,8 +1,8 @@
-defmodule Youtubesync.Context do
+defmodule Campfire.Context do
   import Ecto.Query, warn: false
-  alias Youtubesync.Repo
+  alias Campfire.Repo
 
-  alias Youtubesync.Context.Room
+  alias Campfire.Context.Room
 
   def list_rooms do
     Repo.all(Room)
@@ -38,7 +38,7 @@ defmodule Youtubesync.Context do
     Room.changeset(room, %{})
   end
 
-  alias Youtubesync.Context.Message
+  alias Campfire.Context.Message
 
   def list_messages do
     Repo.all(Message)
@@ -74,7 +74,7 @@ defmodule Youtubesync.Context do
     Message.changeset(message, %{})
   end
 
-  alias Youtubesync.Context.Video
+  alias Campfire.Context.Video
 
   def list_videos do
     Repo.all(Video)

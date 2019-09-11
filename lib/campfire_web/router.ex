@@ -1,5 +1,5 @@
-defmodule YoutubesyncWeb.Router do
-  use YoutubesyncWeb, :router
+defmodule CampfireWeb.Router do
+  use CampfireWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,7 +13,7 @@ defmodule YoutubesyncWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", YoutubesyncWeb do
+  scope "/", CampfireWeb do
     pipe_through :browser
 
     get "/", IndexController, :index
@@ -21,7 +21,7 @@ defmodule YoutubesyncWeb.Router do
     get "/rooms/:uuid", RoomController, :show
   end
 
-  scope "/api", YoutubesyncWeb do
+  scope "/api", CampfireWeb do
     pipe_through :api
 
     post "/rooms/", RoomController, :create

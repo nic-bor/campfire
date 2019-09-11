@@ -1,4 +1,4 @@
-defmodule Youtubesync.DataCase do
+defmodule Campfire.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,20 +16,20 @@ defmodule Youtubesync.DataCase do
 
   using do
     quote do
-      alias Youtubesync.Repo
+      alias Campfire.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Youtubesync.DataCase
+      import Campfire.DataCase
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Youtubesync.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Campfire.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Youtubesync.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Campfire.Repo, {:shared, self()})
     end
 
     :ok

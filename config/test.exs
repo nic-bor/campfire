@@ -2,7 +2,7 @@ use Mix.Config
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :youtubesync, YoutubesyncWeb.Endpoint,
+config :campfire, CampfireWeb.Endpoint,
   http: [port: 4002],
   server: false
 
@@ -10,9 +10,9 @@ config :youtubesync, YoutubesyncWeb.Endpoint,
 config :logger, level: :warn
 
 # Configure your database
-config :youtubesync, Youtubesync.Repo,
+config :campfire, Campfire.Repo,
   username: "postgres",
   password: "postgres",
-  database: "youtubesync_test",
+  database: "campfire_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

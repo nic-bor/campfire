@@ -1,4 +1,4 @@
-defmodule YoutubesyncWeb.ChannelCase do
+defmodule CampfireWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,15 +21,15 @@ defmodule YoutubesyncWeb.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint YoutubesyncWeb.Endpoint
+      @endpoint CampfireWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Youtubesync.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Campfire.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Youtubesync.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Campfire.Repo, {:shared, self()})
     end
 
     :ok

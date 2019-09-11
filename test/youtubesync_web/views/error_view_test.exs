@@ -1,14 +1,14 @@
-defmodule YoutubesyncWeb.ErrorViewTest do
-  use YoutubesyncWeb.ConnCase, async: true
+defmodule CampfireWeb.ErrorViewTest do
+  use CampfireWeb.ConnCase, async: true
 
   # Bring render/3 and render_to_string/3 for testing custom views
   import Phoenix.View
 
   test "renders 404.html" do
-    assert render_to_string(YoutubesyncWeb.ErrorView, "404.html", []) == "Not Found"
+    assert render_to_string(CampfireWeb.ErrorView, "404.html", []) == "Not Found"
   end
 
   test "renders 500.html" do
-    assert render_to_string(YoutubesyncWeb.ErrorView, "500.html", []) == "Internal Server Error"
+    assert render_to_string(CampfireWeb.ErrorView, "500.html", []) == "Internal Server Error"
   end
 end

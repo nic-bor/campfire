@@ -1,10 +1,10 @@
-defmodule YoutubesyncWeb.RoomChannelTest do
-  use YoutubesyncWeb.ChannelCase
+defmodule CampfireWeb.RoomChannelTest do
+  use CampfireWeb.ChannelCase
 
   setup do
     {:ok, _, socket} =
-      socket(YoutubesyncWeb.UserSocket, "user_id", %{some: :assign})
-      |> subscribe_and_join(YoutubesyncWeb.RoomChannel, "room:lobby")
+      socket(CampfireWeb.UserSocket, "user_id", %{some: :assign})
+      |> subscribe_and_join(CampfireWeb.RoomChannel, "room:lobby")
 
     {:ok, socket: socket}
   end

@@ -1,10 +1,10 @@
-defmodule Youtubesync.ContextTest do
-  use Youtubesync.DataCase
+defmodule Campfire.ContextTest do
+  use Campfire.DataCase
 
-  alias Youtubesync.Context
+  alias Campfire.Context
 
   describe "rooms" do
-    alias Youtubesync.Context.Room
+    alias Campfire.Context.Room
 
     @valid_attrs %{name: "some name"}
     @update_attrs %{name: "some updated name"}
@@ -63,7 +63,7 @@ defmodule Youtubesync.ContextTest do
   end
 
   describe "messages" do
-    alias Youtubesync.Context.Message
+    alias Campfire.Context.Message
 
     @valid_attrs %{message: "some message", username: "some username"}
     @update_attrs %{message: "some updated message", username: "some updated username"}
@@ -124,7 +124,7 @@ defmodule Youtubesync.ContextTest do
   end
 
   describe "videos" do
-    alias Youtubesync.Context.Video
+    alias Campfire.Context.Video
 
     @valid_attrs %{bPlayed: true, url: "some url"}
     @update_attrs %{bPlayed: false, url: "some updated url"}

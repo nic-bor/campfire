@@ -1,5 +1,5 @@
-defmodule YoutubesyncWeb.ErrorView do
-  use YoutubesyncWeb, :view
+defmodule CampfireWeb.ErrorView do
+  use CampfireWeb, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

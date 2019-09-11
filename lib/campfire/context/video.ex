@@ -1,4 +1,4 @@
-defmodule Youtubesync.Context.Video do
+defmodule Campfire.Context.Video do
   use Ecto.Schema
   import Ecto.Changeset
 

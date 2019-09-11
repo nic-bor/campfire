@@ -1,12 +1,12 @@
-defmodule YoutubesyncWeb.RoomController do
-  use YoutubesyncWeb, :controller
+defmodule CampfireWeb.RoomController do
+  use CampfireWeb, :controller
 
-  alias Youtubesync.Context
-  alias Youtubesync.Context.Room
-  alias Youtubesync.Repo
+  alias Campfire.Context
+  alias Campfire.Context.Room
+  alias Campfire.Repo
 
-  def create(conn, _params) do
-    with {:ok, %Room{} = room} <- Context.create_room(%{name: "Generic"}) do
+  def create(conn, %{"name" => name}) do
+    with {:ok, %Room{} = room} <- Context.create_room(%{name: name}) do
       conn
       |> put_status(:created)
       |> render("show.json", room: room)

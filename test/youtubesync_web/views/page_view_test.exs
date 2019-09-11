@@ -1,3 +1,3 @@
-defmodule YoutubesyncWeb.IndexViewTest do
-  use YoutubesyncWeb.ConnCase, async: true
+defmodule CampfireWeb.IndexViewTest do
+  use CampfireWeb.ConnCase, async: true
 end

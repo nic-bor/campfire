@@ -1,4 +1,4 @@
-defmodule YoutubesyncWeb.ErrorHelpers do
+defmodule CampfireWeb.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -36,9 +36,9 @@ defmodule YoutubesyncWeb.ErrorHelpers do
     # should be written to the errors.po file. The :count option is
     # set by Ecto and indicates we should also apply plural rules.
     if count = opts[:count] do
-      Gettext.dngettext(YoutubesyncWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(CampfireWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(YoutubesyncWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(CampfireWeb.Gettext, "errors", msg, opts)
     end
   end
 end

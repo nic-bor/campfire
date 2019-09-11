@@ -1,5 +1,5 @@
-defmodule Youtubesync.Repo do
+defmodule Campfire.Repo do
   use Ecto.Repo,
-    otp_app: :youtubesync,
+    otp_app: :campfire,
     adapter: Ecto.Adapters.Postgres
 end

@@ -7,15 +7,15 @@
 # General application configuration
 use Mix.Config
 
-config :youtubesync,
-  ecto_repos: [Youtubesync.Repo]
+config :campfire,
+  ecto_repos: [Campfire.Repo]
 
 # Configures the endpoint
-config :youtubesync, YoutubesyncWeb.Endpoint,
+config :campfire, CampfireWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "uBV3J9YyEnn3nGJDgTfTBTtJfWbmbjOeu0QQ5YH3T3RTj8Jnl+FHK4wfjdw9zap7",
-  render_errors: [view: YoutubesyncWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Youtubesync.PubSub, adapter: Phoenix.PubSub.PG2]
+  render_errors: [view: CampfireWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Campfire.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,

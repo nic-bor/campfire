@@ -1,3 +1,3 @@
-defmodule YoutubesyncWeb.LayoutViewTest do
-  use YoutubesyncWeb.ConnCase, async: true
+defmodule CampfireWeb.LayoutViewTest do
+  use CampfireWeb.ConnCase, async: true
 end

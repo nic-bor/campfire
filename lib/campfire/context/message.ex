@@ -1,4 +1,4 @@
-defmodule Youtubesync.Context.Message do
+defmodule Campfire.Context.Message do
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,3 +1,4 @@
+import util from "./util"
 import socket from "./socket"
 import videojs from "video.js"
 import "videojs-youtube"
@@ -57,6 +58,9 @@ msg.addEventListener('keypress', function (event) {
 if (name.value === "") {
   name.value = "Guest";
 }
+
+// Update title to room name
+util.updateTitle(document.getElementById('room-name').innerText);
 
 // Video logic
 var player = videojs('video', {

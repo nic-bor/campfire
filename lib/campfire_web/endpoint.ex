@@ -1,7 +1,7 @@
-defmodule YoutubesyncWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :youtubesync
+defmodule CampfireWeb.Endpoint do
+  use Phoenix.Endpoint, otp_app: :campfire
 
-  socket "/socket", YoutubesyncWeb.UserSocket,
+  socket "/socket", CampfireWeb.UserSocket,
     websocket: true,
     longpoll: false
 
@@ -11,7 +11,7 @@ defmodule YoutubesyncWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :youtubesync,
+    from: :campfire,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
@@ -39,8 +39,8 @@ defmodule YoutubesyncWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_youtubesync_key",
+    key: "_campfire_key",
     signing_salt: "zHkJQKuP"
 
-  plug YoutubesyncWeb.Router
+  plug CampfireWeb.Router
 end

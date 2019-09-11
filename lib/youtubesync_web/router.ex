@@ -18,7 +18,7 @@ defmodule YoutubesyncWeb.Router do
 
     get "/", IndexController, :index
     get "/rooms/", RoomController, :index
-    get "/rooms/:id", RoomController, :show
+    get "/rooms/:uuid", RoomController, :show
   end
 
   scope "/api", YoutubesyncWeb do

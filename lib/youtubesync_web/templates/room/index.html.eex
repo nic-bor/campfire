@@ -2,7 +2,7 @@
 <ul>
   <%= for room <- @rooms do %>
     <li>
-    <a href="/rooms/<%= room.id %>">
+    <a href="/rooms/<%= room.uuid %>">
       <%= room.name %>
     </a>
     </li>

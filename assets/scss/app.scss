@@ -1,0 +1,50 @@
+$primary: #EF7B45;
+$secondary: #779FA1;
+$back-light: #E2E2E2;
+$back-dark: #1D1113;
+
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../node_modules/font-awesome/scss/font-awesome.scss";
+@import "../node_modules/video.js/dist/video-js.min.css";
+@import "animation.css";
+
+.btn {
+  text-transform: uppercase;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.bg-light {
+  background: $back-light !important
+}
+
+.bg-dark {
+  background: $back-dark !important
+}
+
+// Room
+.videos-remaining {
+  text-align: right;
+  position: relative;
+}
+
+#msg-list {
+  height: 800px;
+  padding: 1rem;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+#msg-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+#msg-list li {
+  display: block;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+}

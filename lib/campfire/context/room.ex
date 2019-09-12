@@ -3,10 +3,13 @@ defmodule Campfire.Context.Room do
   import Ecto.Changeset
   import Ecto.Query
 
+  alias Campfire.Context.Video
+
   schema "rooms" do
     field :name, :string
     field :uuid, Ecto.UUID
     field :isDisabled, :boolean
+    has_many :videos, Video
 
     timestamps()
   end

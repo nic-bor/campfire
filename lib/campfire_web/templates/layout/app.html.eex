@@ -5,19 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>📺🔥| Home</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/app.css") %>"/>
   </head>
-  <body class="my-4 mx-2">
+  <body class="bg-dark">
     <header>
-      <section class="container">
-        <a href="/">
-           <h1 class="text-primary">Campfire</h1>
+      <%# <nav class="navbar">
+        <a class="navbar-brand" href="/">
+           Home
         </a>
-      </section>
+      </nav> %>
+
     </header>
     <main role="main" class="container-fluid">
       <%= render @view_module, @view_template, assigns %>
     </main>
-    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/app.js") %>"></script>
   </body>
 </html>

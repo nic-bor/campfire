@@ -8,10 +8,32 @@ let channel = socket.channel('room:' + window.roomId, {}); // connect to chat "r
 
 let me = uuid.v1();
 
+function updateVideo(urlPart) {
+
+  var vidParams = {
+    "fluid": true,
+    "techOrder": ["youtube"],
+    "sources": [{
+      "type": "video/youtube",
+      "src": "https://www.youtube.com/watch?v=" + urlPart
+    }],
+    "youtube": {
+      "iv_load_policy": 3,
+      "modestbranding": 1,
+      "origin": "*"
+    }
+  };
+
+  player = videojs('video', vidParams)
+}
+
+var player = {}
+updateVideo(window.initVideo)
+
 channel.on('shout', function (payload) { // listen to the 'shout' event
   let li = document.createElement("li"); // create new list item DOM element
   let name = payload.username || 'guest'; // get name from payload or set default
-  li.innerHTML = '<span class="text-focus-in"><b>' + name + '</b>: ' + payload.message + '</span>'; // set li contents
+  li.innerHTML = '<span class="text-focus-in"><b class="text-primary">' + name + '</b> <span class="text-secondary">' + payload.message + '</span></span>'; // set li contents
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
 });
@@ -22,6 +44,8 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
   li.innerHTML = '<span class="text-focus-in text-success"><b>' + 'A new video was added!' + '</b>'; // set li contents
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
+
+  vidcount.innerText = payload.vidcount
 });
 
 channel.join(); // join the channel.
@@ -63,19 +87,6 @@ if (name.value === "") {
 util.updateTitle(document.getElementById('room-name').innerText);
 
 // Video logic
-var player = videojs('video', {
-  "fluid": true,
-  "techOrder": ["youtube"],
-  "sources": [{
-    "type": "video/youtube",
-    "src": "https://www.youtube.com/watch?v=nBPK_oXeJgA"
-  }],
-  "youtube": {
-    "iv_load_policy": 3,
-    "modestbranding": 1,
-    "origin": "*"
-  }
-})
 player.ready(() => {
   var playerElem = document.getElementById('video')
   var ignoreNext = false

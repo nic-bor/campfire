@@ -10,14 +10,6 @@ defmodule Campfire.Context do
 
   def get_room!(id), do: Repo.get!(Room, id)
 
-  def get_room_by_uuid!(uuid) do
-    Repo.one(
-      from r in Room,
-      where: r.uuid == ^uuid,
-      select: r
-    )
-  end
-
   def create_room(attrs \\ %{}) do
     %Room{}
     |> Room.changeset(attrs)

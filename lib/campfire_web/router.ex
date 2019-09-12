@@ -25,5 +25,7 @@ defmodule CampfireWeb.Router do
     pipe_through :api
 
     post "/rooms/", RoomController, :create
+    post "/rooms/:uuid/videos/:url", RoomController, :add_video
+    get "/rooms/:uuid/videos/remaining", RoomController, :get_remaining_videos
   end
 end

@@ -1,7 +1,9 @@
 defmodule CampfireWeb.RoomChannel do
   use CampfireWeb, :channel
 
+  alias Campfire.Repo
   alias Campfire.Context
+  alias Campfire.Context.Video
 
   def join("room:" <> _room_id, payload, socket) do
     if authorized?(payload) do
@@ -33,7 +35,7 @@ defmodule CampfireWeb.RoomChannel do
   def handle_in("shout", payload, socket) do
     "room:" <> room_id = socket.topic
     data = Map.put_new(payload, "room_id", room_id)
-    Context.Message.changeset(%Context.Message{}, data) |> Campfire.Repo.insert!
+    Message.changeset(%Context.Message{}, data) |> Repo.insert!
     broadcast socket, "shout", payload
     {:noreply, socket}
   end
@@ -41,8 +43,15 @@ defmodule CampfireWeb.RoomChannel do
   def handle_in("addvideo", payload, socket) do
     "room:" <> room_id = socket.topic
     data = Map.put_new(payload, "room_id", room_id)
-    Context.Video.changeset(%Context.Video{}, data) |> Campfire.Repo.insert!
-    broadcast socket, "addvideo", %{}
+    Video.changeset(%Context.Video{}, data) |> Repo.insert!
+    videos =
+        Campfire.Context.Video
+        |> Video.for_room(room_id)
+        |> Video.not_played()
+        |> Repo.all
+
+    vidcount = length(videos)
+    broadcast socket, "addvideo", %{vidcount: vidcount}
     {:noreply, socket}
   end
 

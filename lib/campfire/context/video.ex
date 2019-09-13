@@ -40,7 +40,7 @@ defmodule Campfire.Context.Video do
     |> where([_, r], r.id == ^roomid)
     |> select([v, _], v)
     |> not_played
-    |> order_by(desc: :id)
+    |> order_by(asc: :id)
     |> limit(1)
   end
 

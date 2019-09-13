@@ -7,16 +7,23 @@ import uuid from "uuid"
 let channel = socket.channel('room:' + window.roomId, {}); // connect to chat "room"
 
 let me = uuid.v1();
+let currentVideoUrl = window.initVideo;
 
 function updateVideo(urlPart) {
+
+  if (urlPart === "") return
+
+  console.log("Now playing ID " + urlPart)
+
+  let source = {
+    "type": "video/youtube",
+    "src": "https://www.youtube.com/watch?v=" + urlPart
+  };
 
   var vidParams = {
     "fluid": true,
     "techOrder": ["youtube"],
-    "sources": [{
-      "type": "video/youtube",
-      "src": "https://www.youtube.com/watch?v=" + urlPart
-    }],
+    "sources": [source],
     "youtube": {
       "iv_load_policy": 3,
       "modestbranding": 1,
@@ -24,10 +31,15 @@ function updateVideo(urlPart) {
     }
   };
 
-  player = videojs('video', vidParams)
+  if (player == null)
+    player = videojs('video', vidParams)
+  else
+    player.src(source)
+
+  currentVideoUrl = urlPart
 }
 
-var player = {}
+var player = null
 updateVideo(window.initVideo)
 
 channel.on('shout', function (payload) { // listen to the 'shout' event
@@ -47,6 +59,11 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
 
   vidcount.innerText = payload.vidcount
 });
+
+channel.on('video-play', function (payload) { // listen to the 'shout' event
+  updateVideo(payload.url);
+});
+
 
 channel.join(); // join the channel.
 
@@ -110,7 +127,14 @@ player.ready(() => {
     ignoreNext = false
   }
 
+  var endedCallback = () => {
+    channel.push('video-ended', {
+      oldUrl: currentVideoUrl
+    })
+  }
+
   player.on("pause", pauseCallback);
+  player.on("ended", endedCallback);
 
   channel.on('vid-pause', function (payload) {
     if (payload.originator !== me) {
@@ -125,6 +149,10 @@ player.ready(() => {
       player.currentTime(payload.timestamp);
       player.play();
     }
+  });
+
+  channel.on('video-play', function (payload) {
+    updateVideo(payload.url)
   });
 
   channel.on('sync-request', function (payload) {

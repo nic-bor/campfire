@@ -47,7 +47,12 @@ defmodule CampfireWeb.RoomController do
       |> preload([:videos])
       |> Repo.one
 
-    render(conn, "show.html", room: room)
+    initVideo = Video
+    |> Video.current_for_room(room.id)
+    |> Repo.one
+    || %Video{url: ""}
+
+    render(conn, "show.html", roomInfo: %{room: room, initVideo: initVideo})
   end
 
   def index(conn, _params) do

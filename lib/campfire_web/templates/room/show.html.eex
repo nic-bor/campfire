@@ -31,7 +31,7 @@
           <div class="col-12 col-lg-2">
             <div class="d-flex h-100">
               <div class="justify-content-center align-self-end">
-                <p class="videos-remaining"><span id="vidcount" class="number"><%= length(Enum.filter(@room.videos, fn(x) -> !x.bPlayed end)) %></span> Videos Remaining</p>
+                <p class="videos-remaining"><span id="vidcount" class="number"><%= length(Enum.filter(@roomInfo.room.videos, fn(x) -> !x.bPlayed end)) %></span> Videos Remaining</p>
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@
   </div>
 </div>
 <script>
-  window.roomId = "<%= @room.id %>"
-  window.initVideo = "<%= Campfire.Context.Video |> Campfire.Context.Video.current_for_room(@room.id) |> Campfire.Repo.one |> Map.get(:url) %>"
+  window.roomId = "<%= @roomInfo.room.id %>"
+  window.initVideo = "<%= @roomInfo.initVideo.url %>"
 </script>
 <script type="text/javascript" src="<%= Routes.static_path(@conn, "/room.js") %>"></script>

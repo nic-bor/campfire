@@ -1,9 +1,12 @@
 defmodule CampfireWeb.RoomChannel do
   use CampfireWeb, :channel
 
+  import Ecto.Query
+
   alias Campfire.Repo
   alias Campfire.Context
   alias Campfire.Context.Video
+  alias Campfire.Context.Message
 
   def join("room:" <> _room_id, payload, socket) do
     if authorized?(payload) do
@@ -35,7 +38,7 @@ defmodule CampfireWeb.RoomChannel do
   def handle_in("shout", payload, socket) do
     "room:" <> room_id = socket.topic
     data = Map.put_new(payload, "room_id", room_id)
-    Message.changeset(%Context.Message{}, data) |> Repo.insert!
+    Message.changeset(%Message{}, data) |> Repo.insert!
     broadcast socket, "shout", payload
     {:noreply, socket}
   end
@@ -43,9 +46,9 @@ defmodule CampfireWeb.RoomChannel do
   def handle_in("addvideo", payload, socket) do
     "room:" <> room_id = socket.topic
     data = Map.put_new(payload, "room_id", room_id)
-    Video.changeset(%Context.Video{}, data) |> Repo.insert!
+    Video.changeset(%Video{}, data) |> Repo.insert!
     videos =
-        Campfire.Context.Video
+        Video
         |> Video.for_room(room_id)
         |> Video.not_played()
         |> Repo.all
@@ -72,6 +75,37 @@ defmodule CampfireWeb.RoomChannel do
 
   def handle_in("sync-response", payload, socket) do
     broadcast socket, "sync-response", payload
+    {:noreply, socket}
+  end
+
+  def handle_in("video-ended", payload, socket) do
+    "room:" <> room_id = socket.topic
+
+    oldVid = Video
+    |> Video.current_for_room(room_id)
+    |> where([v], v.url == ^payload["oldUrl"])
+    |> Repo.one
+
+    IO.puts "Old vid is:"
+    IO.inspect oldVid
+
+    if oldVid != nil do
+      IO.puts "Old vid was found, updating"
+
+      oldVid
+      |> Ecto.Changeset.change(%{bPlayed: true})
+      |> Repo.update!
+
+      newVid = Video
+      |> Video.current_for_room(room_id)
+      |> Repo.one
+
+      IO.puts "New vid is:"
+      IO.inspect newVid
+
+      broadcast socket, "video-play", newVid
+    end
+
     {:noreply, socket}
   end
 

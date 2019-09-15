@@ -37,6 +37,7 @@ function updateVideo(urlPart) {
     player.src(source)
 
   currentVideoUrl = urlPart
+  player.play()
 }
 
 var player = null

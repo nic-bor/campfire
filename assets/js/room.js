@@ -1,8 +1,11 @@
 import util from "./util"
+import $ from "jquery"
+import "bootstrap"
 import socket from "./socket"
 import videojs from "video.js"
 import "videojs-youtube"
 import uuid from "uuid"
+import toastr from "toastr"
 
 let channel = socket.channel('room:' + window.roomId, {}); // connect to chat "room"
 
@@ -21,7 +24,8 @@ function updateVideo(urlPart) {
   };
 
   var vidParams = {
-    "fluid": true,
+    // "fluid": true,
+    "fill": true,
     "techOrder": ["youtube"],
     "sources": [source],
     "youtube": {
@@ -38,6 +42,36 @@ function updateVideo(urlPart) {
 
   currentVideoUrl = urlPart
   player.play()
+
+  updateVideoInfo(currentVideoUrl)
+}
+
+function showHistory(entries) {
+  let text = "No history."
+  if (entries.length) {
+    entries = entries.map(x => "<li class='history-entry'>" + x + "</li>")
+    text = entries.join("\n")
+  }
+
+  $('#history-entries').html(text)
+  $('#historyModal').modal()
+}
+
+function updateVideoInfo(urlPart) {
+  fetch('/api/youtube/info/' + urlPart)
+    .then(resp => {
+      resp.json()
+        .then(json => {
+          document.getElementById('curVidTitle').innerText = json.title
+          document.getElementById('curVidDescription').innerText = json.description
+
+          util.updateTitle(json.title);
+        })
+    })
+}
+
+function updateVidCount(count) {
+  vidcount.innerText = Math.max(0, count);
 }
 
 var player = null
@@ -58,11 +92,12 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
 
-  vidcount.innerText = payload.vidcount
+  updateVidCount(payload.vidcount)
 });
 
-channel.on('video-play', function (payload) { // listen to the 'shout' event
-  updateVideo(payload.url);
+channel.on('video-play', function (payload) {
+  updateVidCount(payload.remainingCount)
+  updateVideo(payload.newVid.url);
 });
 
 
@@ -78,10 +113,13 @@ let inputAddVideo = document.getElementById('inputAddVideo'); // message input f
 let vidcount = document.getElementById('vidcount'); // message input field
 
 btnAddVideo.addEventListener('click', function (event) {
-  if (inputAddVideo.length !== 0) {
-    channel.push('addvideo', { // send the message to the server on "shout" channel
-      url: inputAddVideo.value
-    });
+  if (inputAddVideo.value.length !== 0) {
+    channel
+      .push('addvideo', { // send the message to the server on "shout" channel
+        url: inputAddVideo.value,
+        host: window.location.hostname + ":" + window.location.port
+      })
+      .receive("error", (msg) => toastr.error(msg.message))
   }
 });
 
@@ -152,10 +190,6 @@ player.ready(() => {
     }
   });
 
-  channel.on('video-play', function (payload) {
-    updateVideo(payload.url)
-  });
-
   channel.on('sync-request', function (payload) {
     if (payload.requestor !== me) {
       channel.push('sync-response', {
@@ -185,4 +219,14 @@ player.ready(() => {
     })
     player.on("play", playCallback);
   })
+
+  document.getElementById('btnHistory').addEventListener("click", (e) => {
+    fetch('/api/rooms/' + window.roomUuid + '/videos/history')
+      .then(resp => {
+        resp.json()
+          .then(json => {
+            showHistory(json.map(x => x.cachedTitle));
+          })
+      })
+  });
 })

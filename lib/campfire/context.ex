@@ -42,6 +42,7 @@ defmodule Campfire.Context do
     Repo.all(
       from m in Message,
         where: m.room_id == ^room_id,
+        order_by: [asc: :id],
         select: m
     )
   end

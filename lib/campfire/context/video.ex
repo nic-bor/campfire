@@ -5,11 +5,12 @@ defmodule Campfire.Context.Video do
 
   alias Campfire.Context.Room
 
-  @derive {Jason.Encoder, only: [:bPlayed, :url]}
+  @derive {Jason.Encoder, only: [:bPlayed, :url, :cachedTitle]}
 
   schema "videos" do
     field :bPlayed, :boolean, default: false
     field :url, :string
+    field :cachedTitle, :string
     belongs_to :room, Room
 
     timestamps()
@@ -18,6 +19,11 @@ defmodule Campfire.Context.Video do
   def not_played(query) do
     query
     |> where([q], q.bPlayed == false)
+  end
+
+  def played(query) do
+    query
+    |> where([q], q.bPlayed == true)
   end
 
   def for_room_uuid(query, uuid) do
@@ -44,11 +50,10 @@ defmodule Campfire.Context.Video do
     |> limit(1)
   end
 
-
   @doc false
   def changeset(video, attrs) do
     video
-    |> cast(attrs, [:url, :bPlayed, :room_id])
+    |> cast(attrs, [:url, :bPlayed, :room_id, :cachedTitle])
     |> cast_assoc(:room)
     |> validate_required([:url, :bPlayed, :room_id])
   end

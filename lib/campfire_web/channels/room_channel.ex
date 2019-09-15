@@ -45,17 +45,31 @@ defmodule CampfireWeb.RoomChannel do
 
   def handle_in("addvideo", payload, socket) do
     "room:" <> room_id = socket.topic
-    data = Map.put_new(payload, "room_id", room_id)
-    Video.changeset(%Video{}, data) |> Repo.insert!
-    videos =
-        Video
-        |> Video.for_room(room_id)
-        |> Video.not_played()
-        |> Repo.all
+    newVid = Map.put_new(payload, "room_id", room_id)
 
-    vidcount = length(videos)
-    broadcast socket, "addvideo", %{vidcount: vidcount}
-    {:noreply, socket}
+    IO.inspect payload
+    # Check if this is actually a youtube video
+    case HTTPoison.get(payload["host"] <> "/api/youtube/info/" <> payload["url"]) do
+      {:ok, %{status_code: 200, body: body}} ->
+        body
+        |> Jason.decode
+        |> case do {:ok, %{"title" => cachedTitle}} ->
+            vidWithTitle = Map.put(newVid, "cachedTitle", cachedTitle);
+            IO.inspect vidWithTitle
+            Video.changeset(%Video{}, vidWithTitle) |> Repo.insert!
+            videos =
+                Video
+                |> Video.for_room(room_id)
+                |> Video.not_played()
+                |> Repo.all
+
+            vidcount = length(videos)
+            broadcast socket, "addvideo", %{vidcount: vidcount - 1}
+            {:reply, {:ok, %{message: "Video added!"}}, socket}
+           _ ->
+            {:reply, {:error, %{message: "Invalid URL. Try harder!"}}, socket}
+           end
+      end
   end
 
   def handle_in("vid-pause", payload, socket) do
@@ -86,12 +100,7 @@ defmodule CampfireWeb.RoomChannel do
     |> where([v], v.url == ^payload["oldUrl"])
     |> Repo.one
 
-    IO.puts "Old vid is:"
-    IO.inspect oldVid
-
     if oldVid != nil do
-      IO.puts "Old vid was found, updating"
-
       oldVid
       |> Ecto.Changeset.change(%{bPlayed: true})
       |> Repo.update!
@@ -100,10 +109,13 @@ defmodule CampfireWeb.RoomChannel do
       |> Video.current_for_room(room_id)
       |> Repo.one
 
-      IO.puts "New vid is:"
-      IO.inspect newVid
+      remainingCount = Video
+      |> Video.for_room(room_id)
+      |> Video.not_played
+      |> Repo.all
+      |> length
 
-      broadcast socket, "video-play", newVid
+      broadcast socket, "video-play", %{newVid: newVid, remainingCount: remainingCount - 1}
     end
 
     {:noreply, socket}

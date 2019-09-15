@@ -15,21 +15,6 @@ defmodule CampfireWeb.RoomController do
     end
   end
 
-  def add_video(conn, %{"uuid" => uuid, "url" => url}) do
-    room = Room
-      |> Room.enabled
-      |> Room.with_uuid(uuid)
-      |> Repo.one
-
-    with {:ok, %Video{} = video} <- Context.create_video(%{url: url, room_id: room.id}) do
-      conn
-      |> send_resp(:created, "OK")
-    else {:error, _} ->
-      conn
-      |> send_resp(:internal_server_error, "NOK")
-    end
-  end
-
   def get_remaining_videos(conn, %{"uuid" => uuid}) do
     videos = Video
       |> Video.for_room_uuid(uuid)
@@ -39,6 +24,14 @@ defmodule CampfireWeb.RoomController do
       render(conn, "showvideos.json", videos: videos)
   end
 
+  def get_video_history(conn, %{"uuid" => uuid}) do
+    videos = Video
+      |> Video.for_room_uuid(uuid)
+      |> Video.played()
+      |> Repo.all
+
+      render(conn, "showvideos.json", videos: videos)
+  end
 
   def show(conn, %{"uuid" => uuid}) do
     room = Room

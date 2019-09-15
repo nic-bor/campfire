@@ -6,7 +6,8 @@ $back-dark: #1D1113;
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../node_modules/font-awesome/scss/font-awesome.scss";
 @import "../node_modules/video.js/dist/video-js.min.css";
-@import "animation.css";
+@import "../node_modules/toastr/build/toastr.min.css";
+@import "animation.scss";
 
 .btn {
   text-transform: uppercase;
@@ -32,7 +33,6 @@ h1 {
 }
 
 #msg-list {
-  height: 800px;
   padding: 1rem;
   overflow-y: scroll;
   scrollbar-width: none;
@@ -47,4 +47,41 @@ h1 {
   display: block;
   margin-top: 0.2em;
   margin-bottom: 0.2em;
+}
+
+.video-description-container {
+  overflow-y: overlay;
+}
+
+@include media-breakpoint-up(md) {
+  .video-container {
+    height: 80vh;
+  }
+
+  #video-wrapper {
+    height: 25vw;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+
+  .video-description-container,
+  #msg-list {
+    max-height: 250px;
+    margin-top: 2rem;
+  }
+
+  #video-wrapper {
+    height: 250px;
+  }
+
+  #msg-list {
+    border-top: 1px orange solid;
+  }
+}
+
+.toast {
+  &.toast-error {
+    background: red;
+  }
 }

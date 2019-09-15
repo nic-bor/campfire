@@ -11,11 +11,15 @@
     "animation.css": "^0.1.0",
     "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",
+    "jquery": "^3.4.1",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
+    "popper.js": "^1.15.0",
+    "toastr": "^2.1.4",
     "uuid": "^3.3.3",
     "video.js": "^7.6.0",
-    "videojs-youtube": "^2.6.0"
+    "videojs-youtube": "^2.6.0",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

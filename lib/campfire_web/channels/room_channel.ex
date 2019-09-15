@@ -67,7 +67,7 @@ defmodule CampfireWeb.RoomChannel do
             broadcast socket, "addvideo", %{vidcount: vidcount - 1}
             {:reply, {:ok, %{message: "Video added!"}}, socket}
            _ ->
-            {:reply, {:error, %{message: "Invalid URL. Try harder!"}}, socket}
+            {:reply, {:error, %{message: "Invalid video ID. Try harder!"}}, socket}
            end
       end
   end

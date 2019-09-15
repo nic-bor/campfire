@@ -40,9 +40,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputAddVideo" class="text-md-right col-12 col-sm-3 col-form-label">Video URL:</label>
+              <label for="inputAddVideo" class="text-md-right col-12 col-sm-3 col-form-label">Video ID:</label>
               <div class="col-12 col-md-6">
-                <input type="text" id="inputAddVideo" class="form-control" placeholder="Enter URL">
+                <input type="text" id="inputAddVideo" class="form-control" placeholder="Enter ID (youtube.com/?v=<ID>)">
               </div>
               <div class="col-12 col-md-2 mt-3 mt-md-0">
                 <button type="button" class="form-control btn btn-primary" id="btnAddVideo">Add</button>

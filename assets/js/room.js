@@ -116,8 +116,13 @@ btnAddVideo.addEventListener('click', function (event) {
   if (inputAddVideo.value.length !== 0) {
     let payload = { // send the message to the server on "shout" channel
       url: inputAddVideo.value,
-      host: window.location.hostname + ":" + window.location.port
+      host: window.location.hostname + ":" + (window.location.port ? window.location.port : "443")
     }
+
+    if (window.location.hostname.startsWith("localhost"))
+      payload.host = "http://localhost:4000"
+    else
+      payload.host = "https://campfire-sync.herokuapp.com"
 
     console.log("Add Video Payload: " + JSON.stringify(payload))
     channel

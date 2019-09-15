@@ -53,6 +53,12 @@ h1 {
   overflow-y: overlay;
 }
 
+.toast {
+  &.toast-error {
+    background: red;
+  }
+}
+
 @include media-breakpoint-up(md) {
   .video-container {
     height: 80vh;
@@ -77,11 +83,5 @@ h1 {
 
   #msg-list {
     border-top: 1px orange solid;
-  }
-}
-
-.toast {
-  &.toast-error {
-    background: red;
   }
 }

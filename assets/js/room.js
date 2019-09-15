@@ -1,11 +1,11 @@
 import util from "./util"
-import $ from "jquery"
-import "bootstrap"
 import socket from "./socket"
 import videojs from "video.js"
 import "videojs-youtube"
 import uuid from "uuid"
 import toastr from "toastr"
+import $ from "jquery"
+import "bootstrap"
 
 let channel = socket.channel('room:' + window.roomId, {}); // connect to chat "room"
 
@@ -114,11 +114,14 @@ let vidcount = document.getElementById('vidcount'); // message input field
 
 btnAddVideo.addEventListener('click', function (event) {
   if (inputAddVideo.value.length !== 0) {
+    let payload = { // send the message to the server on "shout" channel
+      url: inputAddVideo.value,
+      host: window.location.hostname + ":" + window.location.port
+    }
+
+    console.log("Add Video Payload: " + JSON.stringify(payload))
     channel
-      .push('addvideo', { // send the message to the server on "shout" channel
-        url: inputAddVideo.value,
-        host: window.location.hostname + ":" + window.location.port
-      })
+      .push('addvideo', payload)
       .receive("error", (msg) => toastr.error(msg.message))
   }
 });

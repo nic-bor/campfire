@@ -53,10 +53,10 @@ defmodule CampfireWeb.RoomChannel do
       {:ok, %{status_code: 200, body: body}} ->
         body
         |> Jason.decode
-        |> case do {:ok, %{"title" => cachedTitle}} ->
+        |> case do {:ok, %{"title" => cachedTitle, "description" => cachedDescription}} ->
             vidWithTitle = Map.put(newVid, "cachedTitle", cachedTitle);
-            IO.inspect vidWithTitle
-            Video.changeset(%Video{}, vidWithTitle) |> Repo.insert!
+            vidWithDesc = Map.put(vidWithTitle, "cachedDescription", cachedDescription);
+            Video.changeset(%Video{}, vidWithDesc) |> Repo.insert!
             videos =
                 Video
                 |> Video.for_room(room_id)

@@ -10,10 +10,11 @@ import "bootstrap"
 let channel = socket.channel('room:' + window.roomId, {}); // connect to chat "room"
 
 let me = uuid.v1();
-let currentVideoUrl = window.initVideo;
+let currentVideoUrl = window.initVideo.url;
 
-function updateVideo(urlPart) {
+function updateVideo(video) {
 
+  let urlPart = video.url
   if (urlPart === "") return
 
   console.log("Now playing ID " + urlPart)
@@ -43,35 +44,29 @@ function updateVideo(urlPart) {
   currentVideoUrl = urlPart
   player.play()
 
-  updateVideoInfo(currentVideoUrl)
+  updateVideoInfo(video)
+  util.updateTitle(video.cachedTitle);
 }
 
 function showHistory(entries) {
   let text = "No history."
   if (entries.length) {
-    entries = entries.map(x => "<li class='history-entry'>" + x + "</li>")
+    entries.sort((o1, o2) => new Date(o1.date) - new Date(o2.date))
+    entries = entries.map((x, i) => (i + 1) + ". " + x.title + " (ID: " + x.url + ")")
     text = entries.join("\n")
   }
 
-  $('#history-entries').html(text)
+  $('#history-entries').val(text)
   $('#historyModal').modal()
 }
 
-function updateVideoInfo(urlPart) {
-  fetch('/api/youtube/info/' + urlPart)
-    .then(resp => {
-      resp.json()
-        .then(json => {
-          document.getElementById('curVidTitle').innerText = json.title
-          document.getElementById('curVidDescription').innerText = json.description
-
-          util.updateTitle(json.title);
-        })
-    })
+function updateVideoInfo(video) {
+  $('#curVidTitle').text(video.cachedTitle)
+  $('#curVidDescription').text(video.cachedDescription)
 }
 
 function updateVidCount(count) {
-  vidcount.innerText = Math.max(0, count);
+  vidcount.text(Math.max(0, count));
 }
 
 var player = null
@@ -97,7 +92,7 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
 
 channel.on('video-play', function (payload) {
   updateVidCount(payload.remainingCount)
-  updateVideo(payload.newVid.url);
+  updateVideo(payload.newVid);
 });
 
 
@@ -106,16 +101,16 @@ channel.join(); // join the channel.
 
 let ul = document.getElementById('msg-list'); // list of messages.
 let name = document.getElementById('name'); // name of message sender
-let msg = document.getElementById('msg'); // message input field
+let msg = $('#msg'); // message input field
 
-let btnAddVideo = document.getElementById('btnAddVideo'); // message input field
-let inputAddVideo = document.getElementById('inputAddVideo'); // message input field
-let vidcount = document.getElementById('vidcount'); // message input field
+let btnAddVideo = $('#btnAddVideo'); // message input field
+let inputAddVideo = $('#inputAddVideo'); // message input field
+let vidcount = $('#vidcount'); // message input field
 
-btnAddVideo.addEventListener('click', function (event) {
-  if (inputAddVideo.value.length !== 0) {
+btnAddVideo.on('click', function (event) {
+  if (inputAddVideo.val().length !== 0) {
     let payload = { // send the message to the server on "shout" channel
-      url: inputAddVideo.value,
+      url: inputAddVideo.val(),
       host: window.location.hostname + ":" + (window.location.port ? window.location.port : "443")
     }
 
@@ -132,13 +127,13 @@ btnAddVideo.addEventListener('click', function (event) {
 });
 
 // "listen" for the [Enter] keypress event to send a message:
-msg.addEventListener('keypress', function (event) {
-  if (event.keyCode == 13 && msg.value.length > 0) { // don't sent empty msg.
+msg.on('keypress', function (event) {
+  if (event.keyCode == 13 && msg.val().length > 0) { // don't sent empty msg.
     channel.push('shout', { // send the message to the server on "shout" channel
       username: name.value || "Guest", // get value of "name" of person sending the message
-      message: msg.value || "I got nothing to say!" // get message text (value) from msg input field.
+      message: msg.val() || "I got nothing to say!" // get message text (value) from msg input field.
     });
-    msg.value = ''; // reset the message input field for next message.
+    msg.val(""); // reset the message input field for next message.
   }
 });
 
@@ -147,12 +142,8 @@ if (name.value === "") {
   name.value = "Guest";
 }
 
-// Update title to room name
-util.updateTitle(document.getElementById('room-name').innerText);
-
 // Video logic
 player.ready(() => {
-  var playerElem = document.getElementById('video')
   var ignoreNext = false
 
   var pauseCallback = () => {
@@ -228,13 +219,18 @@ player.ready(() => {
     player.on("play", playCallback);
   })
 
-  document.getElementById('btnHistory').addEventListener("click", (e) => {
+  $('#btnHistory').on("click", (e) => {
     fetch('/api/rooms/' + window.roomUuid + '/videos/history')
       .then(resp => {
         resp.json()
           .then(json => {
-            showHistory(json.map(x => x.cachedTitle));
-          })
-      })
+            showHistory(
+              json.map(x => ({
+                title: x.cachedTitle,
+                url: x.url,
+                date: new Date(x.inserted_at)
+              })));
+          });
+      });
   });
 })

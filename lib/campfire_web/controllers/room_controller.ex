@@ -28,6 +28,7 @@ defmodule CampfireWeb.RoomController do
     videos = Video
       |> Video.for_room_uuid(uuid)
       |> Video.played()
+      |> order_by(desc: :id)
       |> Repo.all
 
       render(conn, "showvideos.json", videos: videos)

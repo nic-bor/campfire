@@ -1,6 +1,6 @@
 <%# History Modal %>
 <div class="modal" id="historyModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog mw-100" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Playback History</h5>
@@ -9,8 +9,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <ul id="history-entries">
-        </ul>
+        <textarea id="history-entries">
+        </textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -100,8 +100,14 @@
   </div>
 </div>
 <script>
+  function decodeHtml(html) {
+    var txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  }
+
   window.roomId = "<%= @roomInfo.room.id %>"
   window.roomUuid = "<%= @roomInfo.room.uuid %>"
-  window.initVideo = "<%= @roomInfo.initVideo.url %>"
+  window.initVideo = <%= raw(Jason.encode! @roomInfo.initVideo) %>
 </script>
 <script type="text/javascript" src="<%= Routes.static_path(@conn, "/room.js") %>"></script>

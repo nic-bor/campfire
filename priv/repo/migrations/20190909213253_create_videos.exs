@@ -5,7 +5,8 @@ defmodule Campfire.Repo.Migrations.CreateVideos do
     create table(:videos) do
       add :url, :string
       add :bPlayed, :boolean, default: false, null: false
-      add :cachedTitle, :string
+      add :cachedTitle, :text
+      add :cachedDescription, :text
       add :room_id, references(:rooms, on_delete: :nothing), null: false
 
       timestamps()

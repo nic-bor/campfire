@@ -5,12 +5,14 @@ defmodule Campfire.Context.Video do
 
   alias Campfire.Context.Room
 
-  @derive {Jason.Encoder, only: [:bPlayed, :url, :cachedTitle]}
+  @derive {Jason.Encoder, only: [:bPlayed, :url, :cachedTitle, :cachedDescription, :inserted_at]}
+  @implement HTML.Safe
 
   schema "videos" do
     field :bPlayed, :boolean, default: false
     field :url, :string
     field :cachedTitle, :string
+    field :cachedDescription, :string
     belongs_to :room, Room
 
     timestamps()
@@ -53,7 +55,7 @@ defmodule Campfire.Context.Video do
   @doc false
   def changeset(video, attrs) do
     video
-    |> cast(attrs, [:url, :bPlayed, :room_id, :cachedTitle])
+    |> cast(attrs, [:url, :bPlayed, :room_id, :cachedTitle, :cachedDescription])
     |> cast_assoc(:room)
     |> validate_required([:url, :bPlayed, :room_id])
   end

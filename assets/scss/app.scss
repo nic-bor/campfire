@@ -65,7 +65,9 @@ h1 {
 }
 
 @include media-breakpoint-up(md) {
-  .video-container {
+
+  .video-container,
+  .chat-container {
     height: 80vh;
   }
 

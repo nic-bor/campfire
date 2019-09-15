@@ -52,7 +52,7 @@
           <div class="col-12 col-lg-2">
             <div class="d-flex h-100">
               <div class="justify-content-center align-self-end">
-                <p class="videos-remaining"><span id="vidcount" class="font-weight-bold number"><%= length(Enum.filter(@roomInfo.room.videos, fn(x) -> !x.bPlayed end)) -1 %></span> Videos Remaining</p>
+                <p class="videos-remaining"><span id="vidcount" class="font-weight-bold number"><%= length(Enum.filter(@roomInfo.room.videos, fn(x) -> !x.bPlayed end)) -1 %></span> Video(s) Remaining</p>
               </div>
             </div>
           </div>

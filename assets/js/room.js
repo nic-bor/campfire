@@ -75,7 +75,9 @@ updateVideo(window.initVideo)
 channel.on('shout', function (payload) { // listen to the 'shout' event
   let li = document.createElement("li"); // create new list item DOM element
   let name = payload.username || 'guest'; // get name from payload or set default
-  li.innerHTML = '<span class="text-focus-in"><b class="text-primary">' + name + '</b> <span class="text-secondary">' + payload.message + '</span></span>'; // set li contents
+  let nameSan = util.sanitizeHTML(name);
+  let messageSan = util.sanitizeHTML(payload.message);
+  li.innerHTML = '<span class="text-focus-in"><b class="text-primary">' + nameSan + '</b> <span class="text-secondary">' + messageSan + '</span></span>'; // set li contents
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
 });

@@ -42,6 +42,7 @@ function updateVideo(video) {
     player = videojs('video', vidParams)
     player.ready(() => {
       player.play()
+      console.log(player.tech().el())
     });
   } else {
     // player.reset()
@@ -108,7 +109,7 @@ channel.on('shout', function (payload) { // listen to the 'shout' event
     minute: "numeric"
   });
 
-  li.innerHTML = '<span class="text-focus-in"><b class="text-primary"><span class="msg-time chat-msg-time"> ' + time + ' </span>' + nameSan + ':</b> <span class="text-secondary">' + messageSan + '</span></span>'; // set li contents
+  li.innerHTML = '<span class="text-focus-in msg"><span class="msg-time chat-msg-time"> ' + time + ' </span>' + '<b class="text-primary">' + nameSan + ':</b> <span class="text-secondary">' + messageSan + '</span></span>'; // set li contents
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
 });
@@ -124,7 +125,7 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
     minute: "numeric"
   });
 
-  li.innerHTML = '<span class="text-focus-in text-success"><b><span class="msg-time video-msg-time"> ' + time + ' </span>' + nameSan + ' added a video!' + '</b>'; // set li contents
+  li.innerHTML = '<span class="text-focus-in msg text-success"><span class="msg-time video-msg-time"> ' + time + ' </span>' + '<b>' + nameSan + ' added a video!' + '</b></span>'; // set li contents
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
 

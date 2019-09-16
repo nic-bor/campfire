@@ -55,6 +55,10 @@ h1 {
   color: $inactive;
 }
 
+.msg * {
+  vertical-align: middle;
+}
+
 .video-description-container {
   overflow-y: overlay;
 }
@@ -63,6 +67,11 @@ h1 {
   &.toast-error {
     background: red;
   }
+}
+
+.modal-header,
+.modal-footer {
+  background: $back-light;
 }
 
 #history-entries {

@@ -64,8 +64,8 @@ defmodule CampfireWeb.RoomChannel do
                 |> Repo.all
 
             vidcount = length(videos)
-            broadcast socket, "addvideo", %{vidcount: vidcount - 1}
-            {:reply, {:ok, %{message: "Video added!"}}, socket}
+            broadcast socket, "addvideo", %{vidcount: vidcount - 1, username: payload["username"]}
+            {:reply, {:ok, %{message: payload["username"] <> " added a video!"}}, socket}
            _ ->
             {:reply, {:error, %{message: "Invalid video ID. Try harder!"}}, socket}
            end

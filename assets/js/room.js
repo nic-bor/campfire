@@ -27,6 +27,7 @@ function updateVideo(video) {
   var vidParams = {
     // "fluid": true,
     "fill": true,
+    "poster": "/",
     "techOrder": ["youtube"],
     "sources": [source],
     "youtube": {
@@ -36,13 +37,20 @@ function updateVideo(video) {
     }
   };
 
-  if (player == null)
-    player = videojs('video', vidParams)
-  else
-    player.src(source)
-
   currentVideoUrl = urlPart
-  player.play()
+  if (player == null) {
+    player = videojs('video', vidParams)
+    player.ready(() => {
+      player.play()
+    });
+  } else {
+    // player.reset()
+    player.src(source)
+    player.load()
+    player.ready(() => {
+      player.play()
+    })
+  }
 
   updateVideoInfo(video)
   util.updateTitle(video.cachedTitle);
@@ -85,7 +93,14 @@ channel.on('shout', function (payload) { // listen to the 'shout' event
 channel.on('addvideo', function (payload) { // listen to the 'shout' event
   let li = document.createElement("li"); // create new list item DOM element
   let name = payload.username || 'guest'; // get name from payload or set default
-  li.innerHTML = '<span class="text-focus-in text-success"><b>' + 'A new video was added!' + '</b>'; // set li contents
+
+  let time = new Date().toLocaleTimeString('de-DE', {
+    hour12: false,
+    hour: "numeric",
+    minute: "numeric"
+  });
+
+  li.innerHTML = '<span class="text-focus-in text-success">(' + time + ') <b>' + name + ' added a video!' + '</b>'; // set li contents
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
 
@@ -93,6 +108,7 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
 });
 
 channel.on('video-play', function (payload) {
+  console.log("received video-play with payload " + JSON.stringify(payload))
   updateVidCount(payload.remainingCount)
   updateVideo(payload.newVid);
 });
@@ -113,7 +129,8 @@ btnAddVideo.on('click', function (event) {
   if (inputAddVideo.val().length !== 0) {
     let payload = { // send the message to the server on "shout" channel
       url: inputAddVideo.val(),
-      host: window.location.hostname + ":" + (window.location.port ? window.location.port : "443")
+      host: window.location.hostname + ":" + (window.location.port ? window.location.port : "443"),
+      username: $('#name').val()
     }
 
     if (window.location.hostname.startsWith("localhost"))
@@ -184,6 +201,7 @@ player.ready(() => {
   });
 
   channel.on('vid-play', function (payload) {
+    console.log("received vid-play with payload " + JSON.stringify(payload))
     if (payload.originator !== me) {
       ignoreNext = true;
       player.currentTime(payload.timestamp);

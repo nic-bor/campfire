@@ -64,6 +64,23 @@ h1 {
   height: 400px;
 }
 
+.vjs-youtube .vjs-poster {
+  background-size: contain !important;
+  background-position-x: 50%;
+  background-image: url('hackercat.gif') !important;
+
+  &:before {
+    content: "LOADING";
+    font-size: 4rem;
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    animation-name: hackercat;
+    animation-iteration-count: infinite;
+    animation-duration: 0.5s;
+  }
+}
+
 @include media-breakpoint-up(md) {
 
   .video-container,
@@ -90,5 +107,19 @@ h1 {
 
   #msg-list {
     border-top: 1px orange solid;
+  }
+}
+
+@keyframes hackercat {
+  0% {
+    transform: scale(1) rotate(0deg) translateX(-50%);
+  }
+
+  50% {
+    transform: scale(1.5) rotate(5deg) translateX(-50%);
+  }
+
+  100% {
+    transform: scale(1) rotate(-7deg) translateX(-50%);
   }
 }

@@ -1,7 +1,7 @@
 {
   "license": "MIT",
   "parcel": {
-    "params": "js/*.js -d ../priv/static/"
+    "params": "js/*.js --no-cache -d ../priv/static/ --public-url=."
   },
   "scripts": {
     "deploy": "parcel build $npm_package_parcel_params",

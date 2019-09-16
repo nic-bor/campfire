@@ -70,11 +70,11 @@
     </div>
     <div class="row">
       <%# Video %>
-      <div class="col-12 col-md-6 col-lg-8 order-md-2 d-flex flex-column video-container">
+      <div class="col-12 col-md-6 col-lg-8 col-xl-9 order-md-2 d-flex flex-column video-container">
         <div>
           <h3 id="curVidTitle" class="text-center text-secondary my-4 "></h3>
         </div>
-        <div id="video-wrapper" class="">
+        <div id="video-wrapper" class="flex-grow-1">
           <video id="video" class="video-js vjs-default-skin" controls preload="auto">
           </video>
         </div>
@@ -84,7 +84,7 @@
       </div>
 
       <%# Chat %>
-      <div class="col-12 col-md-6 col-lg-4 order-md-1 mt-md-5 pt-md-2 d-flex flex-column chat-container">
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3 order-md-1 mt-md-5 pt-md-2 d-flex flex-column chat-container">
           <ul id="msg-list"></ul>
         <div>
           <div class="row">

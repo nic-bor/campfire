@@ -125,7 +125,7 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
     minute: "numeric"
   });
 
-  li.innerHTML = '<span class="text-focus-in msg text-success"><span class="msg-time video-msg-time"> ' + time + ' </span>' + '<b>' + nameSan + ' added a video!' + '</b></span>'; // set li contents
+  li.innerHTML = '<span class="text-focus-in msg text-success"><span class="msg-time video-msg-time"> ' + time + ' </span>' + '<b>"' + nameSan + '" added a video!' + '</b></span>'; // set li contents
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
 

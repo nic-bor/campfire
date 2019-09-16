@@ -39,7 +39,12 @@ h1 {
   scrollbar-width: none;
 }
 
-#msg-list::-webkit-scrollbar {
+.video-description-container {
+  scrollbar-width: none;
+}
+
+#msg-list::-webkit-scrollbar,
+.video-description-container::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
@@ -61,6 +66,7 @@ h1 {
 
 .video-description-container {
   overflow-y: overlay;
+  max-height: 300px;
 }
 
 .toast {

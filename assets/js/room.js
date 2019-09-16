@@ -48,7 +48,12 @@ function updateVideo(video) {
     player.src(source)
     player.load()
     player.ready(() => {
-      player.play()
+      player.pause();
+      setTimeout(() => {
+        player.pause();
+        player.currentTime(0);
+        player.play();
+      }, 2000)
     })
   }
 

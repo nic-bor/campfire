@@ -75,7 +75,7 @@
           <h3 id="curVidTitle" class="text-center text-secondary my-4 "></h3>
         </div>
         <div id="video-wrapper" class="">
-          <video id="video" class="video-js vjs-default-skin" controls autoplay preload="auto">
+          <video id="video" class="video-js vjs-default-skin" controls preload="auto">
           </video>
         </div>
         <div class="video-description-container">

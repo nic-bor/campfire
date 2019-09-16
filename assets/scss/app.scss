@@ -1,7 +1,8 @@
 $primary: #EF7B45;
 $secondary: #779FA1;
 $back-light: #E2E2E2;
-$back-dark: #1D1113;
+$back-dark: #12111d;
+$inactive: #8b8b8b;
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 @import "../node_modules/font-awesome/scss/font-awesome.scss";
@@ -45,8 +46,13 @@ h1 {
 
 #msg-list li {
   display: block;
-  margin-top: 0.2em;
+  margin-top: 0.5em;
   margin-bottom: 0.2em;
+}
+
+.msg-time {
+  font-size: 0.7rem;
+  color: $inactive;
 }
 
 .video-description-container {

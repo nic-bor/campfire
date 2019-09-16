@@ -74,8 +74,19 @@ function showHistory(entries) {
 }
 
 function updateVideoInfo(video) {
-  $('#curVidTitle').text(video.cachedTitle)
-  $('#curVidDescription').text(video.cachedDescription)
+  let title = $('#curVidTitle')
+  let description = $('#curVidDescription')
+  title.addClass('tracking-out-contract')
+  description.addClass('tracking-out-contract')
+
+  setTimeout(() => {
+    title.text(video.cachedTitle)
+    description.text(video.cachedDescription)
+    title.removeClass('tracking-out-contract')
+    description.removeClass('tracking-out-contract')
+    title.addClass('text-focus-in')
+    description.addClass('text-focus-in')
+  }, 2500)
 }
 
 function updateVidCount(count) {
@@ -90,14 +101,6 @@ channel.on('shout', function (payload) { // listen to the 'shout' event
   let name = payload.username || 'guest'; // get name from payload or set default
   let nameSan = util.sanitizeHTML(name);
   let messageSan = util.sanitizeHTML(payload.message);
-  li.innerHTML = '<span class="text-focus-in"><b class="text-primary">' + nameSan + '</b> <span class="text-secondary">' + messageSan + '</span></span>'; // set li contents
-  ul.appendChild(li); // append to list
-  ul.scrollTop = ul.scrollHeight - ul.clientHeight;
-});
-
-channel.on('addvideo', function (payload) { // listen to the 'shout' event
-  let li = document.createElement("li"); // create new list item DOM element
-  let name = payload.username || 'guest'; // get name from payload or set default
 
   let time = new Date().toLocaleTimeString('de-DE', {
     hour12: false,
@@ -105,7 +108,23 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
     minute: "numeric"
   });
 
-  li.innerHTML = '<span class="text-focus-in text-success">(' + time + ') <b>' + name + ' added a video!' + '</b>'; // set li contents
+  li.innerHTML = '<span class="text-focus-in"><b class="text-primary"><span class="msg-time chat-msg-time"> ' + time + ' </span>' + nameSan + ':</b> <span class="text-secondary">' + messageSan + '</span></span>'; // set li contents
+  ul.appendChild(li); // append to list
+  ul.scrollTop = ul.scrollHeight - ul.clientHeight;
+});
+
+channel.on('addvideo', function (payload) { // listen to the 'shout' event
+  let li = document.createElement("li"); // create new list item DOM element
+  let name = payload.username || 'guest'; // get name from payload or set default
+  let nameSan = util.sanitizeHTML(name);
+
+  let time = new Date().toLocaleTimeString('de-DE', {
+    hour12: false,
+    hour: "numeric",
+    minute: "numeric"
+  });
+
+  li.innerHTML = '<span class="text-focus-in text-success"><b><span class="msg-time video-msg-time"> ' + time + ' </span>' + nameSan + ' added a video!' + '</b>'; // set li contents
   ul.appendChild(li); // append to list
   ul.scrollTop = ul.scrollHeight - ul.clientHeight;
 
@@ -131,6 +150,12 @@ let inputAddVideo = $('#inputAddVideo'); // message input field
 let vidcount = $('#vidcount'); // message input field
 
 btnAddVideo.on('click', function (event) {
+
+  if (name.value === "") {
+    toastr.error('Please enter a name to add videos!')
+    return;
+  }
+
   if (inputAddVideo.val().length !== 0) {
     let payload = { // send the message to the server on "shout" channel
       url: inputAddVideo.val(),
@@ -153,6 +178,11 @@ btnAddVideo.on('click', function (event) {
 // "listen" for the [Enter] keypress event to send a message:
 msg.on('keypress', function (event) {
   if (event.keyCode == 13 && msg.val().length > 0) { // don't sent empty msg.
+    if (name.value === "") {
+      toastr.error('Please enter a name to chat!')
+      return;
+    }
+
     channel.push('shout', { // send the message to the server on "shout" channel
       username: name.value || "Guest", // get value of "name" of person sending the message
       message: msg.val() || "I got nothing to say!" // get message text (value) from msg input field.
@@ -160,11 +190,6 @@ msg.on('keypress', function (event) {
     msg.val(""); // reset the message input field for next message.
   }
 });
-
-// If username is empty, generate one
-if (name.value === "") {
-  name.value = "Guest";
-}
 
 // Video logic
 player.ready(() => {

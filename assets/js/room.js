@@ -152,16 +152,17 @@ let vidcount = $('#vidcount'); // message input field
 
 btnAddVideo.on('click', function (event) {
 
-  if (name.value === "") {
+  let addName = name.value.trim();
+  if (addName === "") {
     toastr.error('Please enter a name to add videos!')
     return;
   }
 
-  if (inputAddVideo.val().length !== 0) {
+  if (inputAddVideo.val().trim().length !== 0) {
     let payload = { // send the message to the server on "shout" channel
-      url: inputAddVideo.val(),
+      url: inputAddVideo.val().trim(),
       host: window.location.hostname + ":" + (window.location.port ? window.location.port : "443"),
-      username: $('#name').val()
+      username: addName
     }
 
     if (window.location.hostname.startsWith("localhost"))
@@ -179,13 +180,15 @@ btnAddVideo.on('click', function (event) {
 // "listen" for the [Enter] keypress event to send a message:
 msg.on('keypress', function (event) {
   if (event.keyCode == 13 && msg.val().length > 0) { // don't sent empty msg.
-    if (name.value === "") {
+
+    let addName = name.value.trim();
+    if (addName === "") {
       toastr.error('Please enter a name to chat!')
       return;
     }
 
     channel.push('shout', { // send the message to the server on "shout" channel
-      username: name.value || "Guest", // get value of "name" of person sending the message
+      username: addName || "Guest", // get value of "name" of person sending the message
       message: msg.val() || "I got nothing to say!" // get message text (value) from msg input field.
     });
     msg.val(""); // reset the message input field for next message.

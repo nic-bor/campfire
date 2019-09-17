@@ -11,9 +11,13 @@ let channel = socket.channel('room:' + window.roomId, {}); // connect to chat "r
 
 let me = uuid.v1();
 let currentVideoUrl = window.initVideo.url;
+var enableForwarding = true;
 
 function updateVideo(video) {
 
+  // A new video was initiated, disable auto-forwarding until the new one is loaded
+  console.log(new Date().toTimeString() + ": updating video to " + video.url + " and disabling forwarding")
+  enableForwarding = false;
   let urlPart = video.url
   if (urlPart === "") return
 
@@ -42,7 +46,7 @@ function updateVideo(video) {
     player = videojs('video', vidParams)
     player.ready(() => {
       player.play()
-      console.log(player.tech().el())
+      enableForwarding = true;
     });
   } else {
     // player.reset()
@@ -54,6 +58,11 @@ function updateVideo(video) {
         player.pause();
         player.currentTime(0);
         player.play();
+        // Enable auto-forwarding after 2 seconds of playback
+        setTimeout(() => {
+          console.log(new Date().toTimeString() + ": Re-enabling forwarding")
+          enableForwarding = true;
+        }, 3500);
       }, 2000)
     })
   }
@@ -219,9 +228,14 @@ player.ready(() => {
   }
 
   var endedCallback = () => {
-    channel.push('video-ended', {
-      oldUrl: currentVideoUrl
-    })
+    console.log(new Date().toTimeString() + ": endedCallback called, checking if forwarding enabled..")
+    if (enableForwarding) {
+      console.log(new Date().toTimeString() + ": forwarding enabled, pushing video-ended for video url " + currentVideoUrl)
+      channel.push('video-ended', {
+        oldUrl: currentVideoUrl
+      })
+    } else
+      console.log(new Date().toTimeString() + ": forwarding not enabled, not pushing video-ended")
   }
 
   player.on("pause", pauseCallback);
@@ -286,5 +300,16 @@ player.ready(() => {
               })));
           });
       });
+  });
+
+  $('#btnSkipCurrent').on("click", (e) => {
+    channel.push('video-ended', {
+      oldUrl: currentVideoUrl
+    })
+
+    channel.push('shout', { // send the message to the server on "shout" channel
+      username: "System", // get value of "name" of person sending the message
+      message: "Video skipped manually."
+    });
   });
 })

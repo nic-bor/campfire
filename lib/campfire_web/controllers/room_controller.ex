@@ -34,6 +34,15 @@ defmodule CampfireWeb.RoomController do
       render(conn, "showvideos.json", videos: videos)
   end
 
+  def get_all_videos(conn, %{"uuid" => uuid}) do
+    videos = Video
+      |> Video.for_room_uuid(uuid)
+      |> order_by(desc: :id)
+      |> Repo.all
+
+      render(conn, "showvideos.json", videos: videos)
+  end
+
   def show(conn, %{"uuid" => uuid}) do
     room = Room
       |> Room.enabled

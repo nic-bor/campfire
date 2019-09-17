@@ -5,7 +5,7 @@ defmodule Campfire.Context.Video do
 
   alias Campfire.Context.Room
 
-  @derive {Jason.Encoder, only: [:bPlayed, :url, :cachedTitle, :cachedDescription, :inserted_at]}
+  @derive {Jason.Encoder, only: [:id, :bPlayed, :url, :cachedTitle, :cachedDescription, :inserted_at]}
   @implement HTML.Safe
 
   schema "videos" do

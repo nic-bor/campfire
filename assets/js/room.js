@@ -65,7 +65,7 @@ function updateVideo(video) {
 function showHistory(entries) {
   let text = "No history."
   if (entries.length) {
-    entries.sort((o1, o2) => new Date(o1.date) - new Date(o2.date))
+    entries.sort((o1, o2) => o1.id - o2.id)
     entries = entries.map((x, i) => (i + 1) + ". " + x.title + " (ID: " + x.url + ")")
     text = entries.join("\n")
   }
@@ -279,7 +279,7 @@ player.ready(() => {
               json.map(x => ({
                 title: x.cachedTitle,
                 url: x.url,
-                date: new Date(x.inserted_at)
+                id: x.id
               })));
           });
       });

@@ -102,6 +102,11 @@ h1 {
   }
 }
 
+#btnSkipCurrent:hover {
+  background: red;
+  border-color: red;
+}
+
 @include media-breakpoint-up(md) {
 
   .video-container,

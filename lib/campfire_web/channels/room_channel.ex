@@ -115,7 +115,7 @@ defmodule CampfireWeb.RoomChannel do
       |> Repo.all
       |> length
 
-      broadcast socket, "video-play", %{newVid: newVid, remainingCount: remainingCount - 1}
+      broadcast socket, "video-play", %{newVid: newVid, oldVid: oldVid, remainingCount: remainingCount - 1, manual: payload["manual"], name: payload["name"]}
     end
 
     {:noreply, socket}

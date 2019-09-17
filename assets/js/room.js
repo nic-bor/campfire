@@ -1,6 +1,7 @@
 import util from "./util"
 import socket from "./socket"
 import videojs from "video.js"
+import moment from "moment"
 import "videojs-youtube"
 import uuid from "uuid"
 import toastr from "toastr"
@@ -16,12 +17,12 @@ var enableForwarding = true;
 function updateVideo(video) {
 
   // A new video was initiated, disable auto-forwarding until the new one is loaded
-  console.log(new Date().toTimeString() + ": updating video to " + video.url + " and disabling forwarding")
+  util.logInfo("updating video to " + video.url + " and disabling forwarding")
   enableForwarding = false;
   let urlPart = video.url
   if (urlPart === "") return
 
-  console.log("Now playing ID " + urlPart)
+  util.logInfo("Now playing ID " + urlPart)
 
   let source = {
     "type": "video/youtube",
@@ -49,7 +50,6 @@ function updateVideo(video) {
       enableForwarding = true;
     });
   } else {
-    // player.reset()
     player.src(source)
     player.load()
     player.ready(() => {
@@ -60,7 +60,7 @@ function updateVideo(video) {
         player.play();
         // Enable auto-forwarding after 2 seconds of playback
         setTimeout(() => {
-          console.log(new Date().toTimeString() + ": Re-enabling forwarding")
+          util.logInfo("Re-enabling forwarding")
           enableForwarding = true;
         }, 3500);
       }, 2000)
@@ -75,7 +75,7 @@ function showHistory(entries) {
   let text = "No history."
   if (entries.length) {
     entries.sort((o1, o2) => o1.id - o2.id)
-    entries = entries.map((x, i) => (i + 1) + ". " + x.title + " (ID: " + x.url + ")")
+    entries = entries.map((x, i) => `${i + 1}. ${x.title} (${x.url}) - [Added on ${moment(x.inserted_at).format('DD.MM HH:mm')}]`)
     text = entries.join("\n")
   }
 
@@ -86,16 +86,25 @@ function showHistory(entries) {
 function updateVideoInfo(video) {
   let title = $('#curVidTitle')
   let description = $('#curVidDescription')
+  let details = $('#curVidDetails')
+
   title.addClass('tracking-out-contract')
   description.addClass('tracking-out-contract')
+  details.addClass('tracking-out-contract')
 
   setTimeout(() => {
     title.text(video.cachedTitle)
     description.text(video.cachedDescription)
+    $('#curVidInsertedAt').text(moment(video.inserted_at).format('DD.MM.YYYY HH:mm'))
+    $('#curVidID').text(video.url)
+
     title.removeClass('tracking-out-contract')
     description.removeClass('tracking-out-contract')
+    details.removeClass('tracking-out-contract')
+
     title.addClass('text-focus-in')
     description.addClass('text-focus-in')
+    details.addClass('text-focus-in')
   }, 2500)
 }
 
@@ -106,9 +115,9 @@ function updateVidCount(count) {
 var player = null
 updateVideo(window.initVideo)
 
-channel.on('shout', function (payload) { // listen to the 'shout' event
-  let li = document.createElement("li"); // create new list item DOM element
-  let name = payload.username || 'guest'; // get name from payload or set default
+channel.on('shout', function (payload) {
+  let li = document.createElement("li");
+  let name = payload.username || 'guest';
   let nameSan = util.sanitizeHTML(name);
   let messageSan = util.sanitizeHTML(payload.message);
 
@@ -142,9 +151,23 @@ channel.on('addvideo', function (payload) { // listen to the 'shout' event
 });
 
 channel.on('video-play', function (payload) {
-  console.log("received video-play with payload " + JSON.stringify(payload))
+  util.logInfo("received video-play with payload " + JSON.stringify(payload))
   updateVidCount(payload.remainingCount)
   updateVideo(payload.newVid);
+
+  if (payload.manual) {
+    let time = new Date().toLocaleTimeString('de-DE', {
+      hour12: false,
+      hour: "numeric",
+      minute: "numeric"
+    });
+
+    let li = document.createElement("li");
+    li.innerHTML = '<span class="text-focus-in msg text-warning"><span class="msg-time skip-msg-time"> ' + time + ' </span>' + '<b> Video "' + payload.oldVid.cachedTitle + '" skipped manually by "' + payload.name + '". ' + '</b></span>'; // set li contents
+    ul.appendChild(li); // append to list
+    ul.scrollTop = ul.scrollHeight - ul.clientHeight;
+  }
+
 });
 
 
@@ -179,7 +202,7 @@ btnAddVideo.on('click', function (event) {
     else
       payload.host = "https://campfire-sync.herokuapp.com"
 
-    console.log("Add Video Payload: " + JSON.stringify(payload))
+    util.logInfo("Add Video Payload: " + JSON.stringify(payload))
     channel
       .push('addvideo', payload)
       .receive("error", (msg) => toastr.error(msg.message))
@@ -228,14 +251,15 @@ player.ready(() => {
   }
 
   var endedCallback = () => {
-    console.log(new Date().toTimeString() + ": endedCallback called, checking if forwarding enabled..")
+    util.logInfo("endedCallback called, checking if forwarding enabled..")
     if (enableForwarding) {
-      console.log(new Date().toTimeString() + ": forwarding enabled, pushing video-ended for video url " + currentVideoUrl)
+      util.logInfo("forwarding enabled, pushing video-ended for video url " + currentVideoUrl)
       channel.push('video-ended', {
-        oldUrl: currentVideoUrl
+        oldUrl: currentVideoUrl,
+        manual: false
       })
     } else
-      console.log(new Date().toTimeString() + ": forwarding not enabled, not pushing video-ended")
+      util.logWarn("forwarding not enabled, not pushing video-ended - this means a potential skip was prevented")
   }
 
   player.on("pause", pauseCallback);
@@ -249,7 +273,7 @@ player.ready(() => {
   });
 
   channel.on('vid-play', function (payload) {
-    console.log("received vid-play with payload " + JSON.stringify(payload))
+    util.logInfo("received vid-play with payload " + JSON.stringify(payload))
     if (payload.originator !== me) {
       ignoreNext = true;
       player.currentTime(payload.timestamp);
@@ -296,20 +320,19 @@ player.ready(() => {
               json.map(x => ({
                 title: x.cachedTitle,
                 url: x.url,
-                id: x.id
+                id: x.id,
+                inserted_at: x.inserted_at
               })));
           });
       });
   });
 
-  $('#btnSkipCurrent').on("click", (e) => {
-    channel.push('video-ended', {
-      oldUrl: currentVideoUrl
+  $('#btnSkipCurrent')
+    .on("click", (e) => {
+      channel.push('video-ended', {
+        oldUrl: currentVideoUrl,
+        manual: true,
+        name: name.value || "Guest"
+      })
     })
-
-    channel.push('shout', { // send the message to the server on "shout" channel
-      username: "System", // get value of "name" of person sending the message
-      message: "Video skipped manually."
-    });
-  });
 })

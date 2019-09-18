@@ -1,5 +1,8 @@
 import util from "./util"
 import socket from "./socket"
+import {
+  Presence
+} from "phoenix"
 import videojs from "video.js"
 import moment from "moment"
 import "videojs-youtube"
@@ -29,6 +32,18 @@ var enableForwarding = true
 // However, when triggering for example video.play(), this will itself trigger the "play"-event of the video element, which causes a push of video-continue over the channel..etc.
 // This bool is used as a marker to ignore the next video.on('play') event for such cases to prevent such event flooding.
 var ignoreNext = false
+
+// Used for presence tracking / showing the number of current users.
+// Tightly coupled to Phoenix.Presence.
+var presences = {};
+
+// Updates the count of users currently online.
+function updateOnlineUsers(presences) {
+
+  // Simply count number of users
+  let numUsers = Presence.list(presences, (a, b) => 1).length
+  $('#usersOnline').text(numUsers)
+}
 
 // Resets the video player with the given video and updates visual elements such as the video title and description
 function updateVideo(video) {
@@ -199,6 +214,17 @@ function insertChatMessage(message, name, timestamp, messageClass) {
 
 // First, join the websocket channel to start pushing/receiving events
 channel.join()
+
+// Presence: Handle changes in presence
+channel.on("presence_state", state => {
+  presences = Presence.syncState(presences, state)
+  updateOnlineUsers(presences)
+})
+
+channel.on("presence_diff", diff => {
+  presences = Presence.syncDiff(presences, diff)
+  updateOnlineUsers(presences)
+})
 
 // Shout: A new chat message arrived. Add it to the chat.
 channel.on('shout', function (payload) {

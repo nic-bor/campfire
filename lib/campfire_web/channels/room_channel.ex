@@ -7,6 +7,7 @@ defmodule CampfireWeb.RoomChannel do
   alias Campfire.Context
   alias Campfire.Context.Video
   alias Campfire.Context.Message
+  alias CampfireWeb.Presence
 
   def join("room:" <> _room_id, payload, socket) do
     if authorized?(payload) do
@@ -19,6 +20,13 @@ defmodule CampfireWeb.RoomChannel do
 
   def handle_info(:after_join, socket) do
     "room:" <> room_id = socket.topic
+
+    push(socket, "presence_state", Presence.list(socket))
+
+    {:ok, _} = Presence.track(socket, socket.assigns.usertoken, %{
+      online_at: inspect(System.system_time(:second))
+    })
+
     Context.get_messages_by_room(room_id)
     |> Enum.each(fn msg -> push(socket, "shout", %{
         username: msg.username,
@@ -44,7 +52,6 @@ defmodule CampfireWeb.RoomChannel do
       {:deny, _} ->
         {:reply, {:error, %{message: "You're going a bit too fast. Try again in a couple seconds."}}, socket}
       {:allow, _} ->
-        IO.inspect socket
         data = Map.put_new(payload, "room_id", room_id)
         Message.changeset(%Message{}, data) |> Repo.insert!
         broadcast socket, "shout", payload

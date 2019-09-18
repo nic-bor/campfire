@@ -8,12 +8,9 @@ defmodule Campfire.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      # Start the Ecto repository
       Campfire.Repo,
-      # Start the endpoint when the application starts
-      CampfireWeb.Endpoint
-      # Starts a worker by calling: Campfire.Worker.start_link(arg)
-      # {Campfire.Worker, arg},
+      CampfireWeb.Endpoint,
+      CampfireWeb.Presence
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

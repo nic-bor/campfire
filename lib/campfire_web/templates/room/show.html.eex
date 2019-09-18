@@ -87,7 +87,8 @@
 
       <%# Chat %>
       <div class="col-12 col-md-6 col-lg-4 col-xl-3 order-md-1 mt-md-5 pt-md-2 d-flex flex-column chat-container">
-          <ul id="msg-list"></ul>
+        <span class="text-muted mb-sm-3 text-center font-weight-bold"><span id="usersOnline"></span> <span>User(s) online</span></span>
+        <ul id="msg-list"></ul>
         <div>
           <div class="row">
             <div class="col-12">

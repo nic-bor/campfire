@@ -2,7 +2,7 @@ defmodule CampfireWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :campfire
 
   socket "/socket", CampfireWeb.UserSocket,
-    websocket: true,
+    websocket: [connect_info: [:peer_data]],
     longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.

@@ -38,39 +38,52 @@ defmodule CampfireWeb.RoomChannel do
   # broadcast to everyone in the current topic (room:lobby).
   def handle_in("shout", payload, socket) do
     "room:" <> room_id = socket.topic
-    data = Map.put_new(payload, "room_id", room_id)
-    Message.changeset(%Message{}, data) |> Repo.insert!
-    broadcast socket, "shout", payload
-    {:noreply, socket}
+
+    # Rate-Limit
+    case Hammer.check_rate("shout#"<>socket.assigns.usertoken, 2000, 2) do
+      {:deny, _} ->
+        {:reply, {:error, %{message: "You're going a bit too fast. Try again in a couple seconds."}}, socket}
+      {:allow, _} ->
+        IO.inspect socket
+        data = Map.put_new(payload, "room_id", room_id)
+        Message.changeset(%Message{}, data) |> Repo.insert!
+        broadcast socket, "shout", payload
+        {:reply,{:ok, %{message: "OK"}}, socket}
+      end
   end
 
   def handle_in("vid-add", payload, socket) do
     "room:" <> room_id = socket.topic
     newVid = Map.put_new(payload, "room_id", room_id)
 
-    IO.inspect payload
-    # Check if this is actually a youtube video
-    case HTTPoison.get(payload["host"] <> "/api/youtube/info/" <> payload["url"]) do
-      {:ok, %{status_code: 200, body: body}} ->
-        body
-        |> Jason.decode
-        |> case do {:ok, %{"title" => cachedTitle, "description" => cachedDescription}} ->
-            vidWithTitle = Map.put(newVid, "cachedTitle", cachedTitle);
-            vidWithDesc = Map.put(vidWithTitle, "cachedDescription", cachedDescription);
-            Video.changeset(%Video{}, vidWithDesc) |> Repo.insert!
-            videos =
-                Video
-                |> Video.for_room(room_id)
-                |> Video.not_played()
-                |> Repo.all
+    # Rate-Limit
+    case Hammer.check_rate("vid-add#"<>socket.assigns.usertoken, 5000, 1) do
+      {:deny, _} ->
+        {:reply, {:error, %{message: "You're going a bit too fast. Try again in a couple seconds."}}, socket}
+      {:allow, _} ->
+        # Check if this is actually a youtube video
+        case HTTPoison.get(payload["host"] <> "/api/youtube/info/" <> payload["url"]) do
+          {:ok, %{status_code: 200, body: body}} ->
+            body
+            |> Jason.decode
+            |> case do {:ok, %{"title" => cachedTitle, "description" => cachedDescription}} ->
+                vidWithTitle = Map.put(newVid, "cachedTitle", cachedTitle);
+                vidWithDesc = Map.put(vidWithTitle, "cachedDescription", cachedDescription);
+                Video.changeset(%Video{}, vidWithDesc) |> Repo.insert!
+                videos =
+                    Video
+                    |> Video.for_room(room_id)
+                    |> Video.not_played()
+                    |> Repo.all
 
-            vidcount = length(videos)
-            broadcast socket, "vid-add", %{vidcount: vidcount - 1, username: payload["username"]}
-            {:reply, {:ok, %{message: payload["username"] <> " added a video!"}}, socket}
-           _ ->
-            {:reply, {:error, %{message: "Invalid video ID. Try harder!"}}, socket}
-           end
-      end
+                vidcount = length(videos)
+                broadcast socket, "vid-add", %{vidcount: vidcount - 1, username: payload["username"]}
+                {:reply, {:ok, %{message: "Video added!"}}, socket}
+               _ ->
+                {:reply, {:error, %{message: "Invalid video ID. Try harder!"}}, socket}
+               end
+          end
+        end
   end
 
   def handle_in("vid-pause", payload, socket) do

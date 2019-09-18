@@ -71,7 +71,11 @@ h1 {
 
 .toast {
   &.toast-error {
-    background: red;
+    background: $danger;
+  }
+
+  &.toast-success {
+    background: $success;
   }
 }
 

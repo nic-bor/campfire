@@ -1,11 +1,5 @@
 defmodule CampfireWeb.YoutubeController do
   use CampfireWeb, :controller
-  import Ecto.Query
-
-  alias Campfire.Context
-  alias Campfire.Context.Room
-  alias Campfire.Context.Video
-  alias Campfire.Repo
 
   def info(conn, %{"videoid" => videoid}) do
     apiKey = "AIzaSyAQZXgFtTYVp9BnJ5m4StIqnyaYruGqe7c"

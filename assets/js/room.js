@@ -311,6 +311,12 @@ $(() => {
       // Push the new video - the server will validate the given ID and reply with an error if the Youtube API says no, which we show in a toast.
       channel
         .push('vid-add', payload)
+        .receive("ok", (msg) => {
+
+          // On success, Clear Video ID input field
+          inputAddVideo.val("")
+          toastr.success(msg.message)
+        })
         .receive("error", (msg) => toastr.error(msg.message))
     }
   })
@@ -354,11 +360,17 @@ $(() => {
         return
       }
 
-      channel.push('shout', { // send the message to the server on "shout" channel
-        username: addName || "Guest",
-        message: msg.val() || "I got nothing to say!" // get message text (value) from msg input field.
-      })
-      msg.val("") // reset the message input field for next message.
+      channel
+        .push('shout', { // send the message to the server on "shout" channel
+          username: addName || "Guest",
+          message: msg.val() || "I got nothing to say!" // get message text (value) from msg input field.
+        })
+        .receive("error", (msg) => toastr.error(msg.message))
+        .receive("ok", () => {
+          // reset the message input field for next message.
+          msg.val("")
+        })
+
     }
   })
 

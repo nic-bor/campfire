@@ -15,8 +15,18 @@ defmodule CampfireWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(params, socket, connect_info) do
+    # Add the ip address
+    ipAddr =
+      connect_info.peer_data.address
+      |> :inet_parse.ntoa
+      |> to_string
+
+    aSocket = socket
+      |> assign(:ip_addr, ipAddr)
+      |> assign(:usertoken, params["usertoken"])
+
+    {:ok, aSocket}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

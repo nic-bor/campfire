@@ -10,9 +10,11 @@ import {
   Socket
 } from "phoenix"
 
+import uuid from "uuid"
+
 let socket = new Socket("/socket", {
   params: {
-    token: window.userToken
+    usertoken: uuid.v1()
   }
 })
 

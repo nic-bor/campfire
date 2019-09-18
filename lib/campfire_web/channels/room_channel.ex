@@ -23,6 +23,7 @@ defmodule CampfireWeb.RoomChannel do
     |> Enum.each(fn msg -> push(socket, "shout", %{
         username: msg.username,
         message: msg.message,
+        timestamp: msg.inserted_at
       }) end)
     {:noreply, socket} # :noreply
   end
@@ -43,7 +44,7 @@ defmodule CampfireWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("addvideo", payload, socket) do
+  def handle_in("vid-add", payload, socket) do
     "room:" <> room_id = socket.topic
     newVid = Map.put_new(payload, "room_id", room_id)
 
@@ -64,7 +65,7 @@ defmodule CampfireWeb.RoomChannel do
                 |> Repo.all
 
             vidcount = length(videos)
-            broadcast socket, "addvideo", %{vidcount: vidcount - 1, username: payload["username"]}
+            broadcast socket, "vid-add", %{vidcount: vidcount - 1, username: payload["username"]}
             {:reply, {:ok, %{message: payload["username"] <> " added a video!"}}, socket}
            _ ->
             {:reply, {:error, %{message: "Invalid video ID. Try harder!"}}, socket}
@@ -92,7 +93,7 @@ defmodule CampfireWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("video-ended", payload, socket) do
+  def handle_in("vid-ended", payload, socket) do
     "room:" <> room_id = socket.topic
 
     oldVid = Video
@@ -115,13 +116,13 @@ defmodule CampfireWeb.RoomChannel do
       |> Repo.all
       |> length
 
-      broadcast socket, "video-play", %{newVid: newVid, oldVid: oldVid, remainingCount: remainingCount - 1, manual: payload["manual"], name: payload["name"]}
+      broadcast socket, "vid-new", %{newVid: newVid, oldVid: oldVid, remainingCount: remainingCount - 1, manual: payload["manual"], name: payload["name"]}
     end
 
     {:noreply, socket}
   end
 
-  # Add authorization logic here as required.
+  # No authorization logic (for now)
   defp authorized?(_payload) do
     true
   end

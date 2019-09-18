@@ -104,7 +104,7 @@ function showHistory(entries) {
   // If this room has history, format each line and add it to a textarea element inside the modal
   if (entries.length) {
     entries.sort((o1, o2) => o1.id - o2.id)
-    entries = entries.map((x, i) => `${i + 1}. ${x.title} (${x.url}) - [Added on ${moment(x.inserted_at).format('DD.MM HH:mm')}]`)
+    entries = entries.map((x, i) => `${i + 1}. ${x.title} (${x.url}) - [Added ${moment(x.inserted_at).format('DD.MM HH:mm')}]`)
     text = entries.join("\n")
   }
 
@@ -131,7 +131,7 @@ function updateVideoInfo(video) {
     //.. update the element texts as desired to the new values..
     title.text(video.cachedTitle)
     description.text(video.cachedDescription)
-    $('#curVidInsertedAt').text(moment(video.inserted_at).format('DD.MM.YYYY HH:mm'))
+    $('#curVidInsertedAt').text(moment(video.inserted_at).fromNow())
     $('#curVidID').text(video.url)
 
     //.. remove the fade-out classes..
@@ -205,8 +205,6 @@ channel.on('shout', function (payload) {
 
   // Insert chat message
   insertChatMessage(payload.message, payload.username || "Guest", payload.timestamp, "text-secondary")
-
-  // li.innerHTML = '<span class="text-focus-in msg"><span class="msg-time chat-msg-time"> ' + time + ' </span>' + '<b class="text-primary">' + nameSan + ':</b> <span class="text-secondary">' + messageSan + '</span></span>' // set li contents
 })
 
 // AddVideo: Someone (possibly the user itself) added a video. Post a message to the chat.
@@ -215,7 +213,6 @@ channel.on('vid-add', function (payload) {
   // get name from payload or set default, then insert a system message into the chat list
   let name = payload.username || 'guest'
   insertChatMessage(`"${name}" added a video!`, null, null, "font-weight-bold text-success")
-  // li.innerHTML = '<span class="text-focus-in msg text-success"><span class="msg-time video-msg-time"> ' + time + ' </span>' + '<b>"' + nameSan + '" added a video!' + '</b></span>' // set li contents
   updateVidCount(payload.vidcount)
 })
 
@@ -228,10 +225,8 @@ channel.on('vid-new', function (payload) {
   updateVideo(payload.newVid)
 
   // If the skip was manual (via skip button), insert a system message into the chat.
-  if (payload.manual) {
+  if (payload.manual)
     insertChatMessage(`"${payload.name}" manually skipped the video "${payload.oldVid.cachedTitle}"`, null, null, "font-weight-bold text-warning")
-    // li.innerHTML = '<span class="text-focus-in msg text-warning"><span class="msg-time skip-msg-time"> ' + time + ' </span>' + '<b> Video "' + payload.oldVid.cachedTitle + '" skipped manually by "' + payload.name + '". ' + '</b></span>' // set li contents
-  }
 })
 
 // VidPause: Someone press pause - reflect this on the local player instance, unless the local user was the one who sent it

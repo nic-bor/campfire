@@ -80,7 +80,7 @@
           </video>
         </div>
         <div class="video-description-container">
-          <small id="curVidDetails" class="text-muted"> [<span id="curVidID"></span>] Added to playlist on <span id="curVidInsertedAt"></span></small>
+          <small id="curVidDetails" class="text-muted"> [<span id="curVidID"></span>] Added to playlist <span id="curVidInsertedAt"></span></small>
           <p id="curVidDescription" class="text-secondary text-muted mt-3"></p>
         </div>
       </div>

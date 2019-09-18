@@ -17,7 +17,7 @@ var player = null
 // Generate a personal identifier used for identifying the originator of certain channel broadcasts
 var me = uuid.v1()
 
-// The YouTube ID of the currently playing video; is sent across the channel at several events
+// The YouTube ID of the currently playing video - is sent across the channel at several events
 var currentVideoUrl = window.initVideo.url
 
 // Controls whether pushing "vid-ended" events is currently enabled.
@@ -47,7 +47,7 @@ function updateVideo(video) {
   let source = {
     "type": "video/youtube",
     "src": "https://www.youtube.com/watch?v=" + urlPart
-  };
+  }
 
   var vidParams = {
     "fill": true,
@@ -59,7 +59,7 @@ function updateVideo(video) {
       "modestbranding": 1, // Tone down YT branding a bit
       "origin": "*"
     }
-  };
+  }
 
   // Update the current video marker
   currentVideoUrl = urlPart
@@ -70,19 +70,19 @@ function updateVideo(video) {
     player.ready(() => {
       player.play()
       enableForwarding = true
-    });
+    })
     //.. otherwise, update the source..
   } else {
     player.src(source)
     player.load()
     //.. once the player is ready, pause it to stop autoplay..
     player.ready(() => {
-      player.pause();
+      player.pause()
       // .. start playback after 2 seconds to give other (potentially slower) clients some time to load the video ..
       setTimeout(() => {
-        player.pause();
-        player.currentTime(0);
-        player.play();
+        player.pause()
+        player.currentTime(0)
+        player.play()
         // .. and re-enable auto-forwarding via the video.ended event after another 3.5 seconds.
         setTimeout(() => {
           util.logInfo("Re-enabling forwarding")
@@ -94,7 +94,7 @@ function updateVideo(video) {
 
   // Update video info and tab title
   updateVideoInfo(video)
-  util.updateTitle(video.cachedTitle);
+  util.updateTitle(video.cachedTitle)
 }
 
 // Shows a modal containing the list of played videos for the current room.
@@ -160,23 +160,17 @@ function insertChatMessage(message, name, timestamp, messageClass) {
   if ((message || "") === "") return
 
   // If a name was provided, assemble the name markup.
-  let namePart = "";
+  let namePart = ""
   if ((name || "") !== "") {
     namePart = `
     <b class="text-primary">${util.sanitizeHTML(name)}: </b>
     `
   }
 
-  // Use provided timestamp or generate one from the current time (all messages must contain an equally formatted timestamp).
-  let time = util.sanitizeHTML(timestamp) || new Date().toLocaleTimeString('de-DE', {
-    hour12: false,
-    hour: "numeric",
-    minute: "numeric"
-  });
-
   // The timestamp markup
+  // Use provided timestamp or generate one from the current time (all messages must contain an equally formatted timestamp).
   let timePart = `
-    <span class="msg-time">${time}</span>
+    <span class="msg-time">${util.sanitizeHTML(moment(timestamp || new Date()).format('HH:mm'))}</span>
   `
 
   // The message markup
@@ -191,39 +185,39 @@ function insertChatMessage(message, name, timestamp, messageClass) {
 
   // Create a new li element and put into the corresponsing ul in the DOM.
   let li = document.createElement("li")
-  li.innerHTML = fullMessage;
+  li.innerHTML = fullMessage
 
   let ul = document.getElementById('msg-list')
-  ul.appendChild(li);
+  ul.appendChild(li)
 
   // Enable auto-scrolling to bottom
-  ul.scrollTop = ul.scrollHeight - ul.clientHeight;
+  ul.scrollTop = ul.scrollHeight - ul.clientHeight
 }
 
 // #Channel events#
 // -----------------
 
 // First, join the websocket channel to start pushing/receiving events
-channel.join();
+channel.join()
 
 // Shout: A new chat message arrived. Add it to the chat.
 channel.on('shout', function (payload) {
 
   // Insert chat message
-  insertChatMessage(payload.message, payload.username || "Guest", null, "text-secondary");
+  insertChatMessage(payload.message, payload.username || "Guest", payload.timestamp, "text-secondary")
 
-  // li.innerHTML = '<span class="text-focus-in msg"><span class="msg-time chat-msg-time"> ' + time + ' </span>' + '<b class="text-primary">' + nameSan + ':</b> <span class="text-secondary">' + messageSan + '</span></span>'; // set li contents
-});
+  // li.innerHTML = '<span class="text-focus-in msg"><span class="msg-time chat-msg-time"> ' + time + ' </span>' + '<b class="text-primary">' + nameSan + ':</b> <span class="text-secondary">' + messageSan + '</span></span>' // set li contents
+})
 
 // AddVideo: Someone (possibly the user itself) added a video. Post a message to the chat.
 channel.on('vid-add', function (payload) {
 
   // get name from payload or set default, then insert a system message into the chat list
-  let name = payload.username || 'guest';
-  insertChatMessage(`"${name}" added a video!`, null, null, "font-weight-bold text-success");
-  // li.innerHTML = '<span class="text-focus-in msg text-success"><span class="msg-time video-msg-time"> ' + time + ' </span>' + '<b>"' + nameSan + '" added a video!' + '</b></span>'; // set li contents
+  let name = payload.username || 'guest'
+  insertChatMessage(`"${name}" added a video!`, null, null, "font-weight-bold text-success")
+  // li.innerHTML = '<span class="text-focus-in msg text-success"><span class="msg-time video-msg-time"> ' + time + ' </span>' + '<b>"' + nameSan + '" added a video!' + '</b></span>' // set li contents
   updateVidCount(payload.vidcount)
-});
+})
 
 // VideoNew: Server send a new video to be played (e.g. the old one ended, either automatically or manually)
 channel.on('vid-new', function (payload) {
@@ -231,32 +225,32 @@ channel.on('vid-new', function (payload) {
 
   // Update video and video info accordingly
   updateVidCount(payload.remainingCount)
-  updateVideo(payload.newVid);
+  updateVideo(payload.newVid)
 
   // If the skip was manual (via skip button), insert a system message into the chat.
   if (payload.manual) {
-    insertChatMessage(`"${payload.name}" manually skipped the video "${payload.oldVid.cachedTitle}"`, null, null, "font-weight-bold text-warning");
-    // li.innerHTML = '<span class="text-focus-in msg text-warning"><span class="msg-time skip-msg-time"> ' + time + ' </span>' + '<b> Video "' + payload.oldVid.cachedTitle + '" skipped manually by "' + payload.name + '". ' + '</b></span>'; // set li contents
+    insertChatMessage(`"${payload.name}" manually skipped the video "${payload.oldVid.cachedTitle}"`, null, null, "font-weight-bold text-warning")
+    // li.innerHTML = '<span class="text-focus-in msg text-warning"><span class="msg-time skip-msg-time"> ' + time + ' </span>' + '<b> Video "' + payload.oldVid.cachedTitle + '" skipped manually by "' + payload.name + '". ' + '</b></span>' // set li contents
   }
-});
+})
 
 // VidPause: Someone press pause - reflect this on the local player instance, unless the local user was the one who sent it
 channel.on('vid-pause', function (payload) {
   if (payload.originator !== me) {
-    ignoreNext = true;
-    player.pause();
+    ignoreNext = true
+    player.pause()
   }
-});
+})
 
 // VidPlay: Someone pressed play or used the seeker (same video.js event) - reflect this on the local player instance, unless the local user was the one who sent it
 channel.on('vid-play', function (payload) {
   util.logInfo("received vid-play with payload " + JSON.stringify(payload))
   if (payload.originator !== me) {
-    ignoreNext = true;
-    player.currentTime(payload.timestamp);
-    player.play();
+    ignoreNext = true
+    player.currentTime(payload.timestamp)
+    player.play()
   }
-});
+})
 
 // SyncRequest: When a new client joins, he sends a sync request to get the current video state from the other clients (the server doesn't know about it.)
 // When such a request is received, push a response containing the requested info to the server who then broadcasts it to sync-response.
@@ -268,7 +262,7 @@ channel.on('sync-request', function (payload) {
       requestor: payload.requestor
     })
   }
-});
+})
 
 // SyncResponse: See SyncRequest above - this is the answer sent by the various clients.
 // Reflect the info contained on the local video player, but only if the local client is the one who sent the sync-request.
@@ -283,11 +277,11 @@ channel.on('sync-response', function (payload) {
       player.pause()
     }
   }
-});
+})
 
 $(() => {
-  let name = document.getElementById('name'); // name of message sender
-  let msg = $('#msg'); // message input field
+  let name = document.getElementById('name') // name of message sender
+  let msg = $('#msg') // message input field
 
   // #UI event handlers#
   // -----------------
@@ -296,14 +290,14 @@ $(() => {
   $('#btnAddVideo').on('click', function (event) {
 
     // Sanity check
-    let addName = name.value.trim();
+    let addName = name.value.trim()
     if (addName === "") {
       toastr.error('Please enter a name to add videos!')
-      return;
+      return
     }
 
     // Set up the payload
-    let inputAddVideo = $('#inputAddVideo');
+    let inputAddVideo = $('#inputAddVideo')
     if (inputAddVideo.val().trim().length !== 0) {
       let payload = { // send the message to the server on "shout" channel
         url: inputAddVideo.val().trim(),
@@ -324,7 +318,7 @@ $(() => {
         .push('vid-add', payload)
         .receive("error", (msg) => toastr.error(msg.message))
     }
-  });
+  })
 
   // Show history
   $('#btnHistory').on("click", (e) => {
@@ -339,10 +333,10 @@ $(() => {
                 url: x.url,
                 id: x.id,
                 inserted_at: x.inserted_at
-              })));
-          });
-      });
-  });
+              })))
+          })
+      })
+  })
 
   // Skip the current video
   $('#btnSkipCurrent')
@@ -359,19 +353,19 @@ $(() => {
   msg.on('keypress', function (event) {
     if (event.keyCode == 13 && msg.val().length > 0) { // don't sent empty msg.
 
-      let addName = name.value.trim();
+      let addName = name.value.trim()
       if (addName === "") {
         toastr.error('Please enter a name to chat!')
-        return;
+        return
       }
 
       channel.push('shout', { // send the message to the server on "shout" channel
         username: addName || "Guest",
         message: msg.val() || "I got nothing to say!" // get message text (value) from msg input field.
-      });
-      msg.val(""); // reset the message input field for next message.
+      })
+      msg.val("") // reset the message input field for next message.
     }
-  });
+  })
 
   // #video.js setup#
   // -----------------
@@ -387,10 +381,10 @@ $(() => {
       if (!ignoreNext)
         channel.push('vid-pause', {
           originator: me
-        });
+        })
 
       ignoreNext = false
-    });
+    })
 
     // Ended: Video reached the final frame. To prevent timing issues, this uses the enableForwarding "cooldown-flag" set above.
     player.on("ended",
@@ -407,7 +401,7 @@ $(() => {
         } else
           util.logWarn("forwarding not enabled, not pushing vid-ended - this means a potential skip was prevented")
       }
-    );
+    )
 
     // On the first play event directly after page load, push a sync-request (see above) to get the current video player state.
     // Register a follow-up event handler for 'play' immediately after.
@@ -422,10 +416,10 @@ $(() => {
           channel.push('vid-play', {
             originator: me,
             timestamp: player.currentTime()
-          });
+          })
 
         ignoreNext = false
-      });
+      })
     })
   })
-});
+})

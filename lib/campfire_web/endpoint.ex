@@ -1,6 +1,7 @@
 defmodule CampfireWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :campfire
 
+  # LEFT (pretty much) AS-IS FROM AUTO-GENERATED CODE
   socket "/socket", CampfireWeb.UserSocket,
     websocket: [connect_info: [:peer_data]],
     longpoll: false

@@ -1,6 +1,10 @@
 defmodule CampfireWeb.Router do
+  @moduledoc """
+  The router module for both the browser and API endpoints.
+  """
   use CampfireWeb, :router
 
+  # Pipelines
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -13,6 +17,8 @@ defmodule CampfireWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # Scopes
+  # Browser
   scope "/", CampfireWeb do
     pipe_through :browser
 
@@ -21,6 +27,7 @@ defmodule CampfireWeb.Router do
     get "/rooms/:uuid", RoomController, :show
   end
 
+  # API
   scope "/api", CampfireWeb do
     pipe_through :api
 

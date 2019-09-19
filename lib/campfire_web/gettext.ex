@@ -20,5 +20,7 @@ defmodule CampfireWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
+
+  # LEFT AS-IS FROM AUTO-GENERATED CODE
   use Gettext, otp_app: :campfire
 end

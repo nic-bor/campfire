@@ -17,6 +17,7 @@ defmodule CampfireWeb do
   and import those modules here.
   """
 
+  # LEFT AS-IS FROM AUTO-GENERATED CODE
   def controller do
     quote do
       use Phoenix.Controller, namespace: CampfireWeb

@@ -1,0 +1,10 @@
+// Styles for toastr
+.toast {
+  &.toast-error {
+    background: $danger;
+  }
+
+  &.toast-success {
+    background: $success;
+  }
+}

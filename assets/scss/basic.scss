@@ -1,0 +1,17 @@
+// Contains styles for basic, site-wide elements
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  text-transform: uppercase;
+}
+
+.bg-light {
+  background: $back-light !important
+}
+
+.bg-dark {
+  background: $back-dark !important
+}

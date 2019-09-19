@@ -1,58 +1,22 @@
-$primary: #EF7B45;
-$secondary: #779FA1;
-$back-light: #E2E2E2;
-$back-dark: #12111d;
-$inactive: #8b8b8b;
+// Styles for the room site
 
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
-@import "../node_modules/font-awesome/scss/font-awesome.scss";
-@import "../node_modules/video.js/dist/video-js.min.css";
-@import "../node_modules/toastr/build/toastr.min.css";
-@import "animation.scss";
-
-.btn {
-  text-transform: uppercase;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.bg-light {
-  background: $back-light !important
-}
-
-.bg-dark {
-  background: $back-dark !important
-}
-
-// Room
-.videos-remaining {
-  text-align: right;
-  position: relative;
-}
-
+// #Message List#
 #msg-list {
   padding: 1rem;
   overflow-y: scroll;
   scrollbar-width: none;
-}
 
-.video-description-container {
-  scrollbar-width: none;
+  & li {
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.2em;
+  }
 }
 
 #msg-list::-webkit-scrollbar,
 .video-description-container::-webkit-scrollbar {
   width: 0;
   height: 0;
-}
-
-#msg-list li {
-  display: block;
-  margin-top: 0.5em;
-  margin-bottom: 0.2em;
 }
 
 .msg-time {
@@ -64,21 +28,22 @@ h1 {
   vertical-align: middle;
 }
 
+// #Video Infos#
+.videos-remaining {
+  text-align: right;
+  position: relative;
+}
+
+.video-description-container {
+  scrollbar-width: none;
+}
+
 .video-description-container {
   overflow-y: overlay;
   max-height: 300px;
 }
 
-.toast {
-  &.toast-error {
-    background: $danger;
-  }
-
-  &.toast-success {
-    background: $success;
-  }
-}
-
+// #History Modal#
 .modal-header,
 .modal-footer {
   background: $back-light;
@@ -89,6 +54,7 @@ h1 {
   height: 400px;
 }
 
+// #Video Player#
 .vjs-youtube .vjs-poster {
   background-size: contain !important;
   background-position-x: 50%;
@@ -106,11 +72,13 @@ h1 {
   }
 }
 
+// #Controls#
 #btnSkipCurrent:hover {
   background: red;
   border-color: red;
 }
 
+// #Breakpoint mix-ins#
 @include media-breakpoint-up(md) {
 
   .video-container,
@@ -137,19 +105,5 @@ h1 {
 
   #msg-list {
     border-top: 1px orange solid;
-  }
-}
-
-@keyframes hackercat {
-  0% {
-    transform: scale(1) rotate(0deg) translateX(-50%);
-  }
-
-  50% {
-    transform: scale(1.5) rotate(5deg) translateX(-50%);
-  }
-
-  100% {
-    transform: scale(1) rotate(-7deg) translateX(-50%);
   }
 }

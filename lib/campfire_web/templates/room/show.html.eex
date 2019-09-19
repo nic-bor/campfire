@@ -1,3 +1,4 @@
+<%# Shows a single room. Probably the most important template :) %>
 <%# History Modal %>
 <div class="modal" id="historyModal" tabindex="-1" role="dialog">
   <div class="modal-dialog mw-100" role="document">
@@ -9,6 +10,8 @@
         </button>
       </div>
       <div class="modal-body">
+
+        <%# History Entries %>
         <textarea id="history-entries">
         </textarea>
       </div>
@@ -25,20 +28,18 @@
     <div class="jumbotron p-2 bg-light">
       <div class="container">
         <div class="row">
-          <%# Room name %>
-          <div class="col-12">
-            <h2 id="room-name" class="text-center">
-              <%# <%= @room.name %>
-            </h2>
-          </div>
           <%# Inputs %>
           <div class="col-12 col-lg-8 offset-md-2">
+
+            <%# Name %>
             <div class="form-group row">
               <label for="name" class="text-md-right col-md-3 col-form-label">Your Name:</label>
               <div class="col-md-8">
                 <input type="text" id="name" class="form-control" placeholder="Enter Name">
               </div>
             </div>
+
+            <%# Video ID  %>
             <div class="form-group row">
               <label for="inputAddVideo" class="text-md-right col-12 col-sm-3 col-form-label">Video ID:</label>
               <div class="col-12 col-md-6">
@@ -49,6 +50,8 @@
               </div>
             </div>
           </div>
+
+          <%# Remainig Video Count %>
           <div class="col-12 col-lg-2">
             <div class="d-flex h-100">
               <div class="justify-content-center align-self-end">
@@ -63,14 +66,19 @@
 
   <%# Lower Area %>
   <div class="container-fluid">
+
+    <%# Upper Control buttons %>
     <div class="row">
       <div class="col-12">
         <button type="button" id="btnHistory" class="btn btn-secondary"><span>History</span></button>
         <button type="button" id="btnSkipCurrent" class="btn btn-warning pull-right"><span>Skip</span></button>
       </div>
     </div>
+
+    <%# Video and Chat %>
     <div class="row">
-      <%# Video %>
+
+      <%# Video Title, Player and Description %>
       <div class="col-12 col-md-6 col-lg-8 col-xl-9 order-md-2 d-flex flex-column video-container">
         <div>
           <h3 id="curVidTitle" class="text-center text-secondary my-4 "></h3>
@@ -100,13 +108,9 @@
     </div>
   </div>
 </div>
-<script>
-  function decodeHtml(html) {
-    var txt = document.createElement("textarea");
-    txt.innerHTML = html;
-    return txt.value;
-  }
 
+<%# Set init variables for video player and room metadata %>
+<script>
   window.roomId = "<%= @roomInfo.room.id %>"
   window.roomUuid = "<%= @roomInfo.room.uuid %>"
   window.initVideo = <%= raw(Jason.encode! @roomInfo.initVideo) %>

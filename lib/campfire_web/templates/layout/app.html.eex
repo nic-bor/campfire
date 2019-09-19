@@ -1,3 +1,4 @@
+<%# Global layout file - all other pages are rendered inside this one %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,18 +11,9 @@
 </head>
 
 <body class="bg-dark">
-  <header>
-    <%# <nav class="navbar">
-        <a class="navbar-brand" href="/">
-           Home
-        </a>
-      </nav> %>
-
-  </header>
   <main role="main" class="container-fluid">
     <%= render @view_module, @view_template, assigns %>
   </main>
   <script type="text/javascript" src="<%= Routes.static_path(@conn, "/_build.js") %>"></script>
 </body>
-
 </html>

@@ -1,12 +1,16 @@
+<%# The Campfire Homepage %>
 <div class="row">
   <div class="col-12 col-md-6 offset-md-3 col-xl-4 offset-xl-4 mt-5">
     <div class="jumbotron bg-light">
+      <%# Header %>
       <div class="row">
         <div class="col-12">
           <h1>🔥</h1>
           <h1>Campfire</h1>
         </div>
       </div>
+
+      <%# Join existing room %>
       <div class="row">
         <div class="col-12 mb-5">
           <div class="input-group mb-2">
@@ -18,9 +22,13 @@
         </div>
       </div>
       <div class="row">
+
+        <%# Create New Room %>
         <div class="col-12 mb-2">
           <button type="button" id="btnCreateRoom" class="btn btn-primary btn-block">Create Room</button>
         </div>
+
+        <%# List Rooms %>
         <div class="col-12">
           <a href="/rooms">
             <button type="button" class="btn btn-secondary btn-block">List Rooms</button>

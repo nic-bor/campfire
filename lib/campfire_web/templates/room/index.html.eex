@@ -1,10 +1,29 @@
-<h4>List of Rooms:</h4>
-<ul>
-  <%= for room <- @rooms do %>
-  <li>
-    <a href="/rooms/<%= room.uuid %>">
-      <%= room.name %>
-    </a>
-  </li>
-  <% end %>
-</ul>
+<%# List of available rooms %>
+<div class="row">
+  <div class="col-12 col-md-6 offset-md-3 col-xl-4 offset-xl-4 mt-5">
+    <div class="jumbotron bg-light">
+
+      <%# Header %>
+      <div class="row">
+        <div class="col-12">
+          <h1>Room List</h1>
+        </div>
+      </div>
+
+      <%# List of Rooms %>
+      <div class="row">
+        <div class="col-12 mb-5">
+          <%= for room <- @rooms do %>
+          <h5 class="text-center">
+            <a href="/rooms/<%= room.uuid %>">
+              <%= room.name %>
+            </a>
+          </h5>
+          <% end %>
+        </div>
+      </div>
+      <div class="row">
+      </div>
+    </div>
+  </div>
+</div>

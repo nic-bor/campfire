@@ -1,27 +1,22 @@
 defmodule CampfireWeb.UserSocket do
+  @moduledoc """
+  Defines the socket used for the websocket communication inside rooms (see room_channel.ex).
+  """
+
   use Phoenix.Socket
 
-  ## Channels
   channel "room:*", CampfireWeb.RoomChannel
 
-  # Socket params are passed from the client and can
-  # be used to verify and authenticate a user. After
-  # verification, you can put default assigns into
-  # the socket that will be set for all channels, ie
-  #
-  #     {:ok, assign(socket, :user_id, verified_user_id)}
-  #
-  # To deny connection, return `:error`.
-  #
-  # See `Phoenix.Token` documentation for examples in
-  # performing token verification on connect.
+  # Augment socket.assigns with the unique token the client generated so we can identify the user in the channel (see room_channel.ex).
+  # This type of "auth" essentially identifies browser-tabs and is not tamper proof, but good enough for now.
   def connect(params, socket, connect_info) do
-    # Add the ip address
+    # Add the ip address (not in use right now)
     ipAddr =
       connect_info.peer_data.address
       |> :inet_parse.ntoa()
       |> to_string
 
+    # Add the user-generated token
     aSocket =
       socket
       |> assign(:ip_addr, ipAddr)
@@ -30,6 +25,7 @@ defmodule CampfireWeb.UserSocket do
     {:ok, aSocket}
   end
 
+  # !Unexplored - the auto-generated docs follow
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "user_socket:#{socket.assigns.user_id}"

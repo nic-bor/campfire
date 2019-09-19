@@ -1,6 +1,8 @@
 defmodule CampfireWeb.ErrorView do
   use CampfireWeb, :view
 
+  # LEFT AS-IS FROM AUTO-GENERATED CODE
+
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.
   # def render("500.html", _assigns) do

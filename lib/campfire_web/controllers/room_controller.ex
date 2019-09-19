@@ -1,52 +1,20 @@
 defmodule CampfireWeb.RoomController do
+  @moduledoc """
+  Controller for the room page.
+  """
+
   use CampfireWeb, :controller
   import Ecto.Query
 
-  alias Campfire.Context
   alias Campfire.Context.Room
   alias Campfire.Context.Video
   alias Campfire.Repo
 
-  def create(conn, %{"name" => name}) do
-    with {:ok, %Room{} = room} <- Context.create_room(%{name: name}) do
-      conn
-      |> put_status(:created)
-      |> render("show.json", room: room)
-    end
-  end
-
-  def get_remaining_videos(conn, %{"uuid" => uuid}) do
-    videos =
-      Video
-      |> Video.for_room_uuid(uuid)
-      |> Video.not_played()
-      |> Repo.all()
-
-    render(conn, "showvideos.json", videos: videos)
-  end
-
-  def get_video_history(conn, %{"uuid" => uuid}) do
-    videos =
-      Video
-      |> Video.for_room_uuid(uuid)
-      |> Video.played()
-      |> order_by(desc: :id)
-      |> Repo.all()
-
-    render(conn, "showvideos.json", videos: videos)
-  end
-
-  def get_all_videos(conn, %{"uuid" => uuid}) do
-    videos =
-      Video
-      |> Video.for_room_uuid(uuid)
-      |> order_by(desc: :id)
-      |> Repo.all()
-
-    render(conn, "showvideos.json", videos: videos)
-  end
-
+  @doc """
+  Shows a single room with room metadata and information about the currently playing video.
+  """
   def show(conn, %{"uuid" => uuid}) do
+    # Get the requested room.
     room =
       Room
       |> Room.enabled()
@@ -54,6 +22,7 @@ defmodule CampfireWeb.RoomController do
       |> preload([:videos])
       |> Repo.one()
 
+    # Get the currently playing video for the room.
     initVideo =
       Video
       |> Video.current_for_room(room.id)
@@ -63,7 +32,11 @@ defmodule CampfireWeb.RoomController do
     render(conn, "show.html", roomInfo: %{room: room, initVideo: initVideo})
   end
 
+  @doc """
+  Shows the room index (list of available rooms).
+  """
   def index(conn, _params) do
+    # Get all enabled rooms.
     rooms =
       Room
       |> Room.enabled()

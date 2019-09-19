@@ -1,11 +1,7 @@
 defmodule CampfireWeb.RoomView do
+  @doc """
+  View for the room HTML endpoints.
+  """
+
   use CampfireWeb, :view
-
-  def render("show.json", %{room: room}) do
-    room.uuid
-  end
-
-  def render("showvideos.json", %{videos: videos}) do
-    videos
-  end
 end

@@ -24,10 +24,10 @@ defmodule CampfireWeb.Router do
   scope "/api", CampfireWeb do
     pipe_through :api
 
-    post "/rooms/", RoomController, :create
-    get "/rooms/:uuid/videos/remaining", RoomController, :get_remaining_videos
-    get "/rooms/:uuid/videos/history", RoomController, :get_video_history
-    get "/rooms/:uuid/videos/all", RoomController, :get_all_videos
+    post "/rooms/", RoomApiController, :create
+    get "/rooms/:uuid/videos/remaining", RoomApiController, :get_remaining_videos
+    get "/rooms/:uuid/videos/history", RoomApiController, :get_video_history
+    get "/rooms/:uuid/videos/all", RoomApiController, :get_all_videos
   end
 
   scope "/api/youtube", CampfireWeb do

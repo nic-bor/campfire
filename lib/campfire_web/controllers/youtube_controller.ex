@@ -1,4 +1,8 @@
 defmodule CampfireWeb.YoutubeController do
+  @moduledoc """
+   TO BE REMOVED / REFACTORED INTO A SERVICE-LIKE THING
+  """
+
   use CampfireWeb, :controller
 
   def info(conn, %{"videoid" => videoid}) do

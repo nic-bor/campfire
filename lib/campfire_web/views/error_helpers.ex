@@ -3,6 +3,7 @@ defmodule CampfireWeb.ErrorHelpers do
   Conveniences for translating and building error messages.
   """
 
+  # LEFT AS-IS FROM AUTO-GENERATED CODE
   use Phoenix.HTML
 
   @doc """

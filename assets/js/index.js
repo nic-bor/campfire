@@ -1,13 +1,16 @@
-let btnCreate = document.getElementById('btnCreateRoom'); // message input field
-let btnJoin = document.getElementById('btnJoinRoom'); // message input field
+import $ from "jquery"
 
-btnJoin.addEventListener('click', () => {
-  let roomId = document.getElementById('inputRoomId').value
-  if (roomId !== "")
+$('#btnJoinRoom').on('click', () => {
+
+  // Get the room id from the input field and send user there
+  let roomId = $('#inputRoomId').val()
+  if ((roomId || "") !== "")
     document.location.href = "/rooms/" + roomId
 })
 
-btnCreate.addEventListener('click', (event) => {
+$('#btnCreateRoom').on('click', () => {
+
+  // Post the create event. If operation was successful, redirect the user to the newly created room
   fetch(
     '/api/rooms', {
       method: 'POST',

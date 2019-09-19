@@ -119,7 +119,7 @@ function showHistory(entries) {
   // If this room has history, format each line and add it to a textarea element inside the modal
   if (entries.length) {
     entries.sort((o1, o2) => o1.id - o2.id)
-    entries = entries.map((x, i) => `${i + 1}. ${x.title} (${x.url}) - [Added ${moment(x.inserted_at).format('DD.MM HH:mm')}]`)
+    entries = entries.map((x, i) => `${i + 1}. ${x.title} (${x.url}) - [Added ${moment.utc(x.inserted_at).local().format('DD.MM HH:mm')}]`)
     text = entries.join("\n")
   }
 
@@ -146,7 +146,7 @@ function updateVideoInfo(video) {
     //.. update the element texts as desired to the new values..
     title.text(video.cachedTitle)
     description.text(video.cachedDescription)
-    $('#curVidInsertedAt').text(moment(video.inserted_at).fromNow())
+    $('#curVidInsertedAt').text(moment.utc(video.inserted_at).local().fromNow())
     $('#curVidID').text(video.url)
 
     //.. remove the fade-out classes..
@@ -185,7 +185,7 @@ function insertChatMessage(message, name, timestamp, messageClass) {
   // The timestamp markup
   // Use provided timestamp or generate one from the current time (all messages must contain an equally formatted timestamp).
   let timePart = `
-    <span class="msg-time">${util.sanitizeHTML(moment(timestamp || new Date()).format('HH:mm'))}</span>
+    <span class="msg-time">${util.sanitizeHTML(moment.utc(timestamp || new Date().toUTCString()).local().format('HH:mm'))}</span>
   `
 
   // The message markup
@@ -396,7 +396,6 @@ $(() => {
           // reset the message input field for next message.
           msg.val("")
         })
-
     }
   })
 

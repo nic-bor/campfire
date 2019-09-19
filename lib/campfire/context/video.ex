@@ -1,4 +1,7 @@
 defmodule Campfire.Context.Video do
+  @moduledoc """
+  Schema for the videos table. Each room can have n videos. This table is essentially the playlist for the rooms and are sequentially marked as bPlayed. The cached metadata is fetched from the YouTube API.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
@@ -18,16 +21,25 @@ defmodule Campfire.Context.Video do
     timestamps()
   end
 
+  @doc """
+  Throws out videos that are already played.
+  """
   def not_played(query) do
     query
     |> where([q], q.bPlayed == false)
   end
 
+  @doc """
+  Throws out videos that are not played yet.
+  """
   def played(query) do
     query
     |> where([q], q.bPlayed == true)
   end
 
+  @doc """
+  Selects all videos for a given room UUID.
+  """
   def for_room_uuid(query, uuid) do
     query
     |> join(:left, [v], r in assoc(v, :room))
@@ -35,6 +47,9 @@ defmodule Campfire.Context.Video do
     |> select([v, _], v)
   end
 
+  @doc """
+  Selects all videos for a given room ID.
+  """
   def for_room(query, id) do
     query
     |> join(:left, [v], r in assoc(v, :room))
@@ -42,6 +57,9 @@ defmodule Campfire.Context.Video do
     |> select([v, _], v)
   end
 
+  @doc """
+  Selects the oldest unplayed video for a given room ID (e.g. the next video in the room's playlist).
+  """
   def current_for_room(query, roomid) do
     query
     |> join(:left, [v], r in assoc(v, :room))

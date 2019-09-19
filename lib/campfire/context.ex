@@ -1,9 +1,16 @@
 defmodule Campfire.Context do
+  @moduledoc """
+  Contains CRUD helpers for the database.
+  """
+
   import Ecto.Query, warn: false
   alias Campfire.Repo
 
   alias Campfire.Context.Room
+  alias Campfire.Context.Message
+  alias Campfire.Context.Video
 
+  # Rooms
   def list_rooms do
     Repo.all(Room)
   end
@@ -22,16 +29,11 @@ defmodule Campfire.Context do
     |> Repo.update()
   end
 
-  def delete_room(%Room{} = room) do
-    Repo.delete(room)
-  end
-
   def change_room(%Room{} = room) do
     Room.changeset(room, %{})
   end
 
-  alias Campfire.Context.Message
-
+  # Messages
   def list_messages do
     Repo.all(Message)
   end
@@ -53,22 +55,7 @@ defmodule Campfire.Context do
     |> Repo.insert()
   end
 
-  def update_message(%Message{} = message, attrs) do
-    message
-    |> Message.changeset(attrs)
-    |> Repo.update()
-  end
-
-  def delete_message(%Message{} = message) do
-    Repo.delete(message)
-  end
-
-  def change_message(%Message{} = message) do
-    Message.changeset(message, %{})
-  end
-
-  alias Campfire.Context.Video
-
+  # Videos
   def list_videos do
     Repo.all(Video)
   end
@@ -85,10 +72,6 @@ defmodule Campfire.Context do
     video
     |> Video.changeset(attrs)
     |> Repo.update()
-  end
-
-  def delete_video(%Video{} = video) do
-    Repo.delete(video)
   end
 
   def change_video(%Video{} = video) do

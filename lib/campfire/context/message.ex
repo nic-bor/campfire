@@ -1,4 +1,7 @@
 defmodule Campfire.Context.Message do
+  @moduledoc """
+  Schema for the messages table. Each room can have n chat messages.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

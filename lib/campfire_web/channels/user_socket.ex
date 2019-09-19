@@ -19,10 +19,11 @@ defmodule CampfireWeb.UserSocket do
     # Add the ip address
     ipAddr =
       connect_info.peer_data.address
-      |> :inet_parse.ntoa
+      |> :inet_parse.ntoa()
       |> to_string
 
-    aSocket = socket
+    aSocket =
+      socket
       |> assign(:ip_addr, ipAddr)
       |> assign(:usertoken, params["usertoken"])
 

@@ -41,4 +41,9 @@ npm-debug.log
 # variables.
 /config/*.secret.exs
 
+# Asset cache
 /assets/.cache
+
+# ElixirLS IDE extension build fules
+.elixir_ls
+

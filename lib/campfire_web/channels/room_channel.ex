@@ -8,7 +8,6 @@ defmodule CampfireWeb.RoomChannel do
   import Ecto.Query
 
   alias Campfire.Repo
-  alias Campfire.Context
   alias Campfire.Context.Video
   alias Campfire.Context.Message
   alias CampfireWeb.Presence
@@ -37,7 +36,12 @@ defmodule CampfireWeb.RoomChannel do
       })
 
     # Send chat message history to the new client
-    Context.get_messages_by_room(room_id)
+    Message
+    |> Message.for_room(room_id)
+    |> order_by(desc: :id)
+    |> limit(50)
+    |> Repo.all()
+    |> Enum.sort()
     |> Enum.each(fn msg ->
       push(socket, "shout", %{
         username: msg.username,

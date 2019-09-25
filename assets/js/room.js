@@ -322,15 +322,8 @@ $(() => {
     if (inputAddVideo.val().trim().length !== 0) {
       let payload = { // send the message to the server on "shout" channel
         url: inputAddVideo.val().trim(),
-        host: window.location.hostname + ":" + (window.location.port ? window.location.port : "443"),
         username: addName
       }
-
-      // This is only here for stupid technical reasons im too lazy to fix right now :-)
-      if (window.location.hostname.startsWith("localhost"))
-        payload.host = "http://localhost:4000"
-      else
-        payload.host = "https://campfire-sync.herokuapp.com"
 
       util.logInfo("Add Video Payload: " + JSON.stringify(payload))
 

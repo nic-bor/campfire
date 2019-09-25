@@ -96,40 +96,41 @@ defmodule CampfireWeb.RoomChannel do
 
       {:allow, _} ->
         # Attempt to fetch YouTube metadata. If this fails, it's probably not a valid video ID :-)
-        case HTTPoison.get(payload["host"] <> "/api/youtube/info/" <> payload["url"]) do
-          {:ok, %{status_code: 200, body: body}} ->
-            body
-            |> Jason.decode()
-            |> case do
-              {:ok, %{"title" => cachedTitle, "description" => cachedDescription}} ->
-                # GET was successful: Parse out the video info and insert the new video into the database.
-                newVid =
-                  payload
-                  |> Map.put_new("room_id", room_id)
-                  |> Map.put_new("cachedTitle", cachedTitle)
-                  |> Map.put_new("cachedDescription", cachedDescription)
+        case CampfireWeb.YoutubeApi.get_video_info(payload["url"]) do
+          # GET was successful: Parse out the video info and insert the new video into the database.
+          {:ok, %{title: cachedTitle, description: cachedDescription}} ->
+            newVid =
+              payload
+              |> Map.put_new("room_id", room_id)
+              |> Map.put_new("cachedTitle", cachedTitle)
+              |> Map.put_new("cachedDescription", cachedDescription)
 
-                Video.changeset(%Video{}, newVid) |> Repo.insert!()
+            Video.changeset(%Video{}, newVid) |> Repo.insert!()
 
-                # Count the number of remaining videos
-                remainingCount =
-                  Video
-                  |> Video.for_room(room_id)
-                  |> Video.not_played()
-                  |> Repo.all()
-                  |> length
+            # Count the number of remaining videos
+            remainingCount =
+              Video
+              |> Video.for_room(room_id)
+              |> Video.not_played()
+              |> Repo.all()
+              |> length
 
-                # Broadcast the number of remaining videos (minus the current one) and the name of the user who inserted it.
-                broadcast(socket, "vid-add", %{
-                  vidcount: remainingCount - 1,
-                  username: payload["username"]
-                })
+            # Broadcast the number of remaining videos (minus the current one) and the name of the user who inserted it.
+            broadcast(socket, "vid-add", %{
+              vidcount: remainingCount - 1,
+              username: payload["username"]
+            })
 
-                {:reply, {:ok, %{message: "Video added!"}}, socket}
+            {:reply, {:ok, %{message: "Video added!"}}, socket}
 
-              _ ->
-                {:reply, {:error, %{message: "Invalid video ID. Try harder!"}}, socket}
-            end
+          # Error handling: API problem or invalid video id
+          {:error, {:notfound, _}} ->
+            {:reply, {:error, %{message: "Invalid video ID. Try harder!"}}, socket}
+
+          _ ->
+            {:reply,
+             {:error, %{message: "Youtube API error. Something terrible has probably happened."}},
+             socket}
         end
     end
   end
